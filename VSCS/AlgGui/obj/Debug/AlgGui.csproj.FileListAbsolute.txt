@@ -1,0 +1,13 @@
+C:\dwl\lab\_env\gui-testing\VSCS\AlgGui\bin\Debug\AlgGui.exe.config
+C:\dwl\lab\_env\gui-testing\VSCS\AlgGui\bin\Debug\AlgGui.exe
+C:\dwl\lab\_env\gui-testing\VSCS\AlgGui\bin\Debug\AlgGui.pdb
+C:\dwl\lab\_env\gui-testing\VSCS\AlgGui\obj\Debug\AlgGui.csprojResolveAssemblyReference.cache
+C:\dwl\lab\_env\gui-testing\VSCS\AlgGui\obj\Debug\MainWindow.baml
+C:\dwl\lab\_env\gui-testing\VSCS\AlgGui\obj\Debug\MainWindow.g.cs
+C:\dwl\lab\_env\gui-testing\VSCS\AlgGui\obj\Debug\App.g.cs
+C:\dwl\lab\_env\gui-testing\VSCS\AlgGui\obj\Debug\AlgGui_MarkupCompile.cache
+C:\dwl\lab\_env\gui-testing\VSCS\AlgGui\obj\Debug\AlgGui.g.resources
+C:\dwl\lab\_env\gui-testing\VSCS\AlgGui\obj\Debug\AlgGui.Properties.Resources.resources
+C:\dwl\lab\_env\gui-testing\VSCS\AlgGui\obj\Debug\AlgGui.csproj.GenerateResource.Cache
+C:\dwl\lab\_env\gui-testing\VSCS\AlgGui\obj\Debug\AlgGui.exe
+C:\dwl\lab\_env\gui-testing\VSCS\AlgGui\obj\Debug\AlgGui.pdb
