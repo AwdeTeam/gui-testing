@@ -14,8 +14,12 @@ namespace AlgGui
 	class Representation
 	{
 		// member variables
+
 		private Rectangle body = new Rectangle();
-		private List<Ellipse> nodes = new List<Ellipse>();
+		private List<Ellipse> inNodes = new List<Ellipse>();
+		private List<Ellipse> outNodes = new List<Ellipse>();
+
+		// TODO: Nodes are going to have to have their own class (need to have offsets, purposes, complex enough to warrant own class)
 
 		private bool isBodyClicked = false;
 		private double bodyRelativeX = 0; // relative coordinates from body to where mouse clicked
@@ -49,10 +53,9 @@ namespace AlgGui
 
 		// EVENT HANDLERS
 
-
 		private void body_MouseDown(object sender, MouseEventArgs e)
 		{
-			Master.log("I was clicked upon!", Colors.Salmon);
+			Master.log("I was clicked upon!", Colors.Salmon); // DEBUG
 			isBodyClicked = true;
 
 			// get relative coordinates
@@ -71,8 +74,6 @@ namespace AlgGui
 		{
 			if (isBodyClicked) 
 			{ 
-				//Master.log("Mouse moved over me!", Colors.Salmon);
-
 				Point p = e.GetPosition(Master.getCanvas());
 				double x = p.X - bodyRelativeX;
 				double y = p.Y - bodyRelativeY;
