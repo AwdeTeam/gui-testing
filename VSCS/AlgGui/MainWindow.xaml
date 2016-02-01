@@ -13,9 +13,9 @@
 		
 		<Canvas Name="world"></Canvas>
 		
-		<Rectangle Grid.Row="1" Height="2" Fill="#204060" />
+		<Rectangle Grid.Row="1" Height="2" Fill="DarkCyan" />
 		
-		<Grid Grid.Row="2" Background="#000510">
+		<Grid Grid.Row="2" Background="#000910">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="1.5*" />
 				<ColumnDefinition Width="2" />
@@ -45,13 +45,11 @@
 					</Grid.ColumnDefinitions>
 					
 					<Label Foreground="White" FontFamily="Consolas" Content=">" Padding="2" />
-					<TextBox Name="txtConsoleCommand" Grid.Column="1" Padding="2" Background="Transparent" CaretBrush="White" FontFamily="Consolas" Foreground="White" BorderThickness="0" BorderBrush="Transparent" KeyDown="txtConsoleCommand_KeyDown" TextOptions.TextFormattingMode="Display" TextOptions.TextHintingMode="Fixed" LostFocus="txtConsoleCommand_LostFocus" />
+					<TextBox Name="txtConsoleCommand" Grid.Column="1" Padding="2" Background="Transparent" CaretBrush="White" FontFamily="Consolas" Foreground="White" BorderThickness="0" BorderBrush="Transparent" PreviewKeyDown="txtConsoleCommand_KeyDown" TextOptions.TextFormattingMode="Display" TextOptions.TextHintingMode="Fixed" LostFocus="txtConsoleCommand_LostFocus" />
 				</Grid>
-				
-
 			</Grid>
 			
-			<Rectangle Fill="#204060" Grid.Column="1"></Rectangle> <!-- split console and code -->
+			<Rectangle Fill="DarkCyan" Grid.Column="1"></Rectangle> <!-- split console and code -->
 			<ScrollViewer VerticalScrollBarVisibility="Hidden" Grid.Column="2">
 				<Label Name="lblCode" Foreground="Silver" Content="&lt;Code&gt;" FontFamily="Consolas" TextOptions.TextFormattingMode="Display" TextOptions.TextHintingMode="Fixed" />
 			</ScrollViewer>

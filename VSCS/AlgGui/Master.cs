@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace AlgGui
 {
 	// loosely follows singleton pattern?
-	class Logger
+	class Master
 	{
 		private static MainWindow win;
 		
@@ -16,5 +17,7 @@ namespace AlgGui
 
 		public static void log(string message) { win.log(message); }
 		public static void log(string message, Color color) { win.log(message, color); }
+
+		public static Canvas getCanvas() { return win.getMainCanvas(); } // I know the name for this now!! Delegation!
 	}
 }

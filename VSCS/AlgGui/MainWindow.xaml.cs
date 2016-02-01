@@ -15,28 +15,34 @@ using System.Windows.Shapes;
 
 namespace AlgGui
 {
-	/// <summary>
-	/// Interaction logic for MainWindow.xaml
-	/// </summary>
 	public partial class MainWindow : Window
 	{
 		// member variables
-		private bool isTyping = false;
+		private bool isTyping = false; // meant to counteract window auto focusing textbox even if already typing there
 		private bool isTypingNotAvail = false; // set to true if need to type elsewhere so doesn't auto put cursor in console when start to type
 
-		// log levels (don't necessarily need this)
-		const int DEBUG = 1;
+		private List<string> commandHistory = new List<string>();
+		private int commandIndex = 0; // keeps track of where in command history you are
+
+		// log channel
 		const int NORMAL = 0;
+		const int DEBUG = 1;
+		const int VERBOSE = 2;
 
 		public MainWindow()
 		{
 			InitializeComponent();
 			clearConsole();
-			Logger.assignWindow(this);
+			Master.assignWindow(this);
 			log("Program initialized!");
 
 			addRect(10, 10, 40, 40);
+
+			Representation r = new Representation();
 		}
+
+		// properties
+		public Canvas getMainCanvas() { return world; }
 
 		// ------------------------------------
 		//  EVENTS
@@ -53,9 +59,18 @@ namespace AlgGui
 			txtConsoleCommand.CaretIndex = txtConsoleCommand.Text.Length; // move cursor to end of line
 		}
 
+		// NOTE: technically a PreviewKeyDown event, so that it also registers arrow keys
 		private void txtConsoleCommand_KeyDown(object sender, KeyEventArgs e)
 		{
+			//log("Key was pressed"); // DEBUG
 			if (e.Key == Key.Enter) { enterConsoleCommand(); }
+			else if (e.Key == Key.Up || e.Key == Key.Down)
+			{
+				if (e.Key == Key.Up) { commandIndex--; }
+				else { commandIndex++; }
+				if (commandIndex < 0 || commandIndex >= commandHistory.Count) { txtConsoleCommand.Text = ""; }
+				else { txtConsoleCommand.Text = commandHistory[commandIndex]; }
+			}
 		}
 
 		private void txtConsoleCommand_LostFocus(object sender, RoutedEventArgs e)
@@ -109,6 +124,10 @@ namespace AlgGui
 			log("> " + command, Colors.White);
 			txtConsoleCommand.Focus(); // make sure command line retains focus
 
+			// add to command history
+			commandHistory.Add(command);
+			commandIndex = commandHistory.Count;
+
 			// check for and run command
 			parseCommand(command);
 		}
@@ -125,6 +144,7 @@ namespace AlgGui
 			words = command.Split(' ').ToList();
 			foreach (string word in words)
 			{
+				if (word.Length == 0) { return; }
 				if (word[0] == '-')	{ vals.Add(word.Substring(1)); }
 				else { keys.Add(word); }
 			}
@@ -157,7 +177,7 @@ namespace AlgGui
 						w = Int32.Parse(vals[2]);
 						h = Int32.Parse(vals[3]);
 					}
-					else
+					else // if all in one argument
 					{
 						List<string> args = vals[0].Split(',').ToList();
 						x = Int32.Parse(args[0]);
