@@ -21,6 +21,9 @@ namespace AlgGui
 		private bool isTyping = false; // meant to counteract window auto focusing textbox even if already typing there
 		private bool isTypingNotAvail = false; // set to true if need to type elsewhere so doesn't auto put cursor in console when start to type
 
+		private bool isDragging = false; // updated by individual components so don't stop dragging when mouse leaves
+		private Representation draggingRep = null;
+
 		private List<string> commandHistory = new List<string>();
 		private int commandIndex = 0; // keeps track of where in command history you are
 
@@ -32,17 +35,24 @@ namespace AlgGui
 		public MainWindow()
 		{
 			InitializeComponent();
-			clearConsole();
+			cmd_clearConsole();
 			Master.assignWindow(this);
 			log("Program initialized!");
 
 			addRect(10, 10, 40, 40);
 
-			Representation r = new Representation();
+			Representation r = new Representation(2,1);
+
+			this.MouseMove += world_MouseMove;
 		}
 
 		// properties
 		public Canvas getMainCanvas() { return world; }
+		public void setDragging(bool dragging, Representation dragRep) 
+		{ 
+			isDragging = dragging; draggingRep = dragRep;
+			log("dragging is " + dragging, Colors.Fuchsia);
+		}
 
 		// ------------------------------------
 		//  EVENTS
@@ -78,6 +88,12 @@ namespace AlgGui
 			isTyping = false;
 		}
 
+		private void world_MouseMove(object sender, MouseEventArgs e)
+		{
+			// if mouse has left the box it's dragging, manually call its event
+			if (isDragging) { draggingRep.body_MouseMove(sender, e); }
+		}
+
 		// ------------------------------------
 		//  FUNCTIONS
 		// ------------------------------------
@@ -108,10 +124,7 @@ namespace AlgGui
 			lblConsole.Document.Blocks.Add(new Paragraph(r));
 			lblConsole.ScrollToEnd();
 		}
-		private void clearConsole() 
-		{ 
-			lblConsole.Document.Blocks.Clear();
-		}
+		
 
 		// when user hits enter in the console bar
 		private void enterConsoleCommand()
@@ -160,6 +173,7 @@ namespace AlgGui
 		{
 			if (keys[0] == "exit" || keys[0] == "quit") { cmd_exit(); }
 			else if (keys[0] == "help") { cmd_printHelp(); }
+			else if (keys[0] == "clear" || keys[0] == "cls") { cmd_clearConsole(); }
 			else if (keys[0] == "draw")
 			{
 				if (keys[1] == "rect" || keys[1] == "rectangle")
@@ -199,8 +213,10 @@ namespace AlgGui
 		private void cmd_printHelp()
 		{
 			log("exit | quit", Colors.Yellow);
+			log("clear | cls     // clears console", Colors.Yellow);
 			log("help", Colors.Yellow);
 			log("draw rect[angle] -[x] -[y] -[width] -[height]\ndraw rect[angle] -[x],[y],[width],[height]", Colors.Yellow);
 		}
+		private void cmd_clearConsole() { lblConsole.Document.Blocks.Clear(); }
 	}
 }
