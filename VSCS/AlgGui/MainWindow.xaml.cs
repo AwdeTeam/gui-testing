@@ -27,6 +27,10 @@ namespace AlgGui
 		private List<string> commandHistory = new List<string>();
 		private int commandIndex = 0; // keeps track of where in command history you are
 
+
+		//private List<Representation> representations = new List<Representation>();
+		private Dictionary<int, Representation> representations = new Dictionary<int, Representation>();
+
 		// log channel
 		const int NORMAL = 0;
 		const int DEBUG = 1;
@@ -41,7 +45,8 @@ namespace AlgGui
 
 			addRect(10, 10, 40, 40);
 
-			Representation r = new Representation(2,1);
+			Representation r = new Representation(20,10);
+			representations.Add(r.getID(), r);
 
 			this.MouseMove += world_MouseMove;
 		}
@@ -98,6 +103,8 @@ namespace AlgGui
 		//  FUNCTIONS
 		// ------------------------------------
 
+		public void setCommandPrompt(string prompt) { txtConsoleCommand.Text = prompt; txtConsoleCommand.CaretIndex = txtConsoleCommand.Text.Length; }
+
 		private void addRect(int x, int y, int w, int h)
 		{
 			Rectangle square = new Rectangle();
@@ -142,23 +149,62 @@ namespace AlgGui
 			commandIndex = commandHistory.Count;
 
 			// check for and run command
-			parseCommand(command);
+			try { parseCommand(command); }
+			catch (Exception e)
+			{
+				log(">>> COMMAND PARSING FAILED", Colors.Red);
+				log(e.Message, Colors.Red);
+			}
 		}
 
 		private void parseCommand(string command)
 		{
-			// log("Attempting to run '" + command + "'...", Colors.Green); // DEBUG
+			List<string> prePassWords = new List<string>(); // used for handling quoted text
 			List<string> words = new List<string>();
 
 			List<string> keys = new List<string>();
 			List<string> vals = new List<string>();
 
+
+			// find and replace any spaces NOT inside of quotes
+			if (command.IndexOf("\"") != -1)
+			{
+				string before = command.Substring(0, command.IndexOf("\""));
+			}
+
+			// get all words within quotes and condense
+			prePassWords = command.Split(' ').ToList();
+			for (int i = 0; i < prePassWords.Count; i++)
+			{
+				string word = prePassWords[i];
+				if (word.Contains("\""))
+				{
+					// check for just one word in quotes
+					if (word.Substring(word.IndexOf("\"") + 1).Contains("\"")) { word = word.Replace("\"", ""); words.Add(word); continue; }
+
+					// go through until hit another quote
+					string nextWord = prePassWords[i + 1];
+					do
+					{
+						i++;
+						nextWord = prePassWords[i];
+						word += " " + nextWord;
+					}
+					while (!nextWord.Contains("\""));
+
+					// remove both quotes
+					word = word.Replace("\"","");
+				}
+				words.Add(word);
+				//log("adding " + word, Colors.Gray); // DEBUG
+			}
+
 			// separate into keys and vals
-			words = command.Split(' ').ToList();
+			//words = command.Split(' ').ToList();
 			foreach (string word in words)
 			{
 				if (word.Length == 0) { return; }
-				if (word[0] == '-')	{ vals.Add(word.Substring(1)); }
+				if (word[0] == '-') { vals.Add(word.Substring(1)); }
 				else { keys.Add(word); }
 			}
 			try { handleCommand(keys, vals); }
@@ -201,6 +247,19 @@ namespace AlgGui
 					}
 
 					addRect(x, y, w, h);
+				}
+			}
+			else if (keys[0] == "rep" || keys[0] == "representation")
+			{
+				if (keys[1] == "edit")
+				{
+					int id = Int32.Parse(vals[0]);
+					string attr = vals[1];
+					string val = vals[2];
+
+					Representation r = representations[id];
+
+					if (attr == "lbl") { r.setLabelText(val); }
 				}
 			}
 		}

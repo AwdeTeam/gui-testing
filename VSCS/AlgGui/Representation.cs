@@ -16,6 +16,7 @@ namespace AlgGui
 		private const int NODE_SIZE = 10;
 
 		// member variables
+		private int id = 0;
 		private Rectangle body = new Rectangle();
 		private List<Node> nodes = new List<Node>();
 		//private List<Ellipse> outNodes = new List<Ellipse>();
@@ -30,9 +31,18 @@ namespace AlgGui
 		public Representation(int numIn, int numOut)
 		{
 			Master.log("----Creating representation----");
+			id = Master.getNextRepID();
+			Master.log("ID: " + id, Colors.GreenYellow);
 			int width = calcOptimalWidth(numIn, numOut);
 			createDrawing(100, 100, width, 40, numIn, numOut);
 		}
+
+		// PROPERTIES
+		public void setLabelText(string text) { label.Content = text; }
+		public int getID() { return id; }
+
+		// FUNCTIONS
+
 
 		// find least amount of space to fit all nodes
 		private int calcOptimalWidth(int numIn, int numOut)
@@ -98,10 +108,19 @@ namespace AlgGui
 
 			Master.getCanvas().Children.Add(label);
 			Master.log("Representation label created");
+
+			// label event handlers
+			label.MouseDown += new MouseButtonEventHandler(label_MouseDown);
 		}
 
 
 		// EVENT HANDLERS
+
+		private void label_MouseDown(object sender, MouseEventArgs e)
+		{
+			Master.log("Preparing to update label");
+			Master.setCommandPrompt("rep edit -" + id + " -lbl -\"");
+		}
 
 		// TODO: differentiate between right click and left click (right click to change color?)
 		// don't forget to add a function in Master to change the command prompt line

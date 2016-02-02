@@ -11,6 +11,8 @@ namespace AlgGui
 {
 	class Node
 	{
+		// TODO: add labels on hover (right click allows you to change?)
+
 		// member variables
 		private Ellipse body = new Ellipse();
 

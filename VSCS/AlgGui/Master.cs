@@ -12,6 +12,7 @@ namespace AlgGui
 	class Master
 	{
 		private static MainWindow win;
+		private static int RepID = -1;
 		
 		public static void assignWindow(MainWindow window) { win = window; }
 
@@ -20,5 +21,8 @@ namespace AlgGui
 
 		public static Canvas getCanvas() { return win.getMainCanvas(); } // I know the name for this now!! Delegation!
 		public static void setDragging(bool dragging, Representation dragRep) { win.setDragging(dragging, dragRep); }
+		public static void setCommandPrompt(string text) { win.setCommandPrompt(text); }
+
+		public static int getNextRepID() { RepID++; return RepID; }
 	}
 }
