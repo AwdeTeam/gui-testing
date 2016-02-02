@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+// TODO: can have input file representations?
+
 namespace AlgGui
 {
 	public partial class MainWindow : Window
@@ -45,7 +47,7 @@ namespace AlgGui
 
 			addRect(10, 10, 40, 40);
 
-			Representation r = new Representation(20,10);
+			Representation r = new Representation(1,2);
 			representations.Add(r.getID(), r);
 
 			this.MouseMove += world_MouseMove;
@@ -56,7 +58,7 @@ namespace AlgGui
 		public void setDragging(bool dragging, Representation dragRep) 
 		{ 
 			isDragging = dragging; draggingRep = dragRep;
-			log("dragging is " + dragging, Colors.Fuchsia);
+			//log("dragging is " + dragging, Colors.Fuchsia); // DEBUG
 		}
 
 		// ------------------------------------
@@ -86,6 +88,7 @@ namespace AlgGui
 				if (commandIndex < 0 || commandIndex >= commandHistory.Count) { txtConsoleCommand.Text = ""; }
 				else { txtConsoleCommand.Text = commandHistory[commandIndex]; }
 			}
+			else if (e.Key == Key.Escape) { txtConsoleCommand.Text = ""; }
 		}
 
 		private void txtConsoleCommand_LostFocus(object sender, RoutedEventArgs e)
@@ -200,7 +203,6 @@ namespace AlgGui
 			}
 
 			// separate into keys and vals
-			//words = command.Split(' ').ToList();
 			foreach (string word in words)
 			{
 				if (word.Length == 0) { return; }
@@ -259,7 +261,16 @@ namespace AlgGui
 
 					Representation r = representations[id];
 
-					if (attr == "lbl") { r.setLabelText(val); }
+					if (attr == "lbl") 
+					{ 
+						r.setLabelText(val);
+						log("Updated representation label to '" + val + "'");
+					}
+					else if (attr == "color") 
+					{ 
+						r.getBody().Fill = (SolidColorBrush)(new BrushConverter().ConvertFrom("#" + val));
+						log("Updated representation color to #" + val);
+					}
 				}
 			}
 		}
@@ -275,6 +286,7 @@ namespace AlgGui
 			log("clear | cls     // clears console", Colors.Yellow);
 			log("help", Colors.Yellow);
 			log("draw rect[angle] -[x] -[y] -[width] -[height]\ndraw rect[angle] -[x],[y],[width],[height]", Colors.Yellow);
+			log("rep[resentation] edit -[id] -[attr] -[value]\n\tattr: color, lbl", Colors.Yellow);
 		}
 		private void cmd_clearConsole() { lblConsole.Document.Blocks.Clear(); }
 	}

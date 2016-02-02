@@ -22,6 +22,7 @@ namespace AlgGui
 		//private List<Ellipse> outNodes = new List<Ellipse>();
 
 		private Label label = new Label();
+		private Label labelID = new Label();
 
 		private bool isBodyClicked = false;
 		private double bodyRelativeX = 0; // relative coordinates from body to where mouse clicked
@@ -40,6 +41,7 @@ namespace AlgGui
 		// PROPERTIES
 		public void setLabelText(string text) { label.Content = text; }
 		public int getID() { return id; }
+		public Rectangle getBody() { return body; }
 
 		// FUNCTIONS
 
@@ -53,7 +55,7 @@ namespace AlgGui
 			int widest = totalXIn;
 			if (totalXOut > widest) { widest = totalXOut; }
 
-			if (widest < NODE_SIZE) { widest = NODE_SIZE; }
+			if (widest < 25) { widest = 25; }
 			return widest;
 		}
 
@@ -96,7 +98,16 @@ namespace AlgGui
 				nodes.Add(n);
 			}
 
-			// create label
+			// create labels
+			labelID.Margin = new Thickness(0);
+			labelID.Content = id;
+			labelID.Foreground = new SolidColorBrush(Colors.White);
+			labelID.IsHitTestVisible = false;
+			Canvas.SetLeft(labelID, x);
+			Canvas.SetTop(labelID, y);
+
+			Master.getCanvas().Children.Add(labelID);
+
 			label.Foreground = new SolidColorBrush(Colors.Black);
 			label.Content = "I'm a good label!";
 			label.Padding = new Thickness(0);
@@ -126,24 +137,36 @@ namespace AlgGui
 		// don't forget to add a function in Master to change the command prompt line
 		private void body_MouseDown(object sender, MouseEventArgs e)
 		{
-			Master.log("I was clicked upon!", Colors.Salmon); // DEBUG
-			isBodyClicked = true;
+			if (e.LeftButton == MouseButtonState.Pressed)
+			{
+				Master.log("I was clicked upon!", Colors.Salmon); // DEBUG
+				isBodyClicked = true;
 
-			// get relative coordinates
-			Point p = e.GetPosition(Master.getCanvas());
-			double x = p.X;
-			double y = p.Y;
+				// get relative coordinates
+				Point p = e.GetPosition(Master.getCanvas());
+				double x = p.X;
+				double y = p.Y;
 
-			bodyRelativeX = x - Canvas.GetLeft(body);
-			bodyRelativeY = y - Canvas.GetTop(body);
+				bodyRelativeX = x - Canvas.GetLeft(body);
+				bodyRelativeY = y - Canvas.GetTop(body);
 
-			// tell main window that we're being dragged so it continues action even if mouse moves out of box
-			Master.setDragging(true, this);
+				// tell main window that we're being dragged so it continues action even if mouse moves out of box
+				Master.setDragging(true, this);
+			}
+			else if (e.RightButton == MouseButtonState.Pressed)
+			{
+				Master.log("Right click", Colors.DarkSeaGreen);
+				Master.log("Editing representation id " + id);
+				Master.setCommandPrompt("rep edit -" + id + " -");
+			}
 		}
-		private void body_MouseUp(object sender, EventArgs e)
+		private void body_MouseUp(object sender, MouseEventArgs e)
 		{
-			isBodyClicked = false;
-			Master.setDragging(false, null);
+			if (e.LeftButton == MouseButtonState.Released)
+			{
+				isBodyClicked = false;
+				Master.setDragging(false, null);
+			}
 		}
 		public void body_MouseMove(object sender, MouseEventArgs e)
 		{
@@ -164,9 +187,12 @@ namespace AlgGui
 					Canvas.SetTop(n.getBody(), y + n.getOffsetY());
 				}
 
-				// move label
+				// move labels
 				Canvas.SetLeft(label, x + body.Width + 2);
 				Canvas.SetTop(label, y + (body.Height / 2) - (label.Height / 2));
+
+				Canvas.SetLeft(labelID, x);
+				Canvas.SetTop(labelID, y);
 			}
 		}
 	}
