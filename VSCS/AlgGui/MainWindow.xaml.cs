@@ -46,10 +46,8 @@ namespace AlgGui
 			log("Program initialized!");
 
 			addRect(10, 10, 40, 40);
-
-			Representation r = new Representation(1,2);
-			representations.Add(r.getID(), r);
-
+			addRep(2, 1);
+			
 			this.MouseMove += world_MouseMove;
 		}
 
@@ -119,6 +117,12 @@ namespace AlgGui
 			Canvas.SetTop(square, y);
 
 			log("Added rectangle at x = " + x + ", y = " + y + ", of width " + w + ", and height " + h);
+		}
+
+		private void addRep(int inputs, int outputs)
+		{
+			Representation r = new Representation(inputs, outputs);
+			representations.Add(r.getID(), r);
 		}
 
 		private void loadData(string fileName)
@@ -222,7 +226,7 @@ namespace AlgGui
 			if (keys[0] == "exit" || keys[0] == "quit") { cmd_exit(); }
 			else if (keys[0] == "help") { cmd_printHelp(); }
 			else if (keys[0] == "clear" || keys[0] == "cls") { cmd_clearConsole(); }
-			else if (keys[0] == "draw")
+			else if (keys[0] == "add")
 			{
 				if (keys[1] == "rect" || keys[1] == "rectangle")
 				{
@@ -249,6 +253,13 @@ namespace AlgGui
 					}
 
 					addRect(x, y, w, h);
+				}
+				else if (keys[1] == "rep" || keys[1] == "representation")
+				{
+					List<string> args = vals[0].Split(',').ToList();
+					int ins = Int32.Parse(args[0]);
+					int outs = Int32.Parse(args[1]);
+					addRep(ins, outs);
 				}
 			}
 			else if (keys[0] == "rep" || keys[0] == "representation")
@@ -285,7 +296,7 @@ namespace AlgGui
 			log("exit | quit", Colors.Yellow);
 			log("clear | cls     // clears console", Colors.Yellow);
 			log("help", Colors.Yellow);
-			log("draw rect[angle] -[x] -[y] -[width] -[height]\ndraw rect[angle] -[x],[y],[width],[height]", Colors.Yellow);
+			log("add rect[angle] -[x] -[y] -[width] -[height]\add rect[angle] -[x],[y],[width],[height]", Colors.Yellow);
 			log("rep[resentation] edit -[id] -[attr] -[value]\n\tattr: color, lbl", Colors.Yellow);
 		}
 		private void cmd_clearConsole() { lblConsole.Document.Blocks.Clear(); }
