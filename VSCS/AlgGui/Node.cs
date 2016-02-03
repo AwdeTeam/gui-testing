@@ -35,6 +35,10 @@ namespace AlgGui
 
 		public Ellipse getBody() { return body; }
 
+		public double getCurrentX() { return Canvas.GetLeft(body); }
+		public double getCurrentY() { return Canvas.GetTop(body); }
+		
+
 		private void createDrawing(int x, int y, int size)
 		{
 			// create body
