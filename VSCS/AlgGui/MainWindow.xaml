@@ -1,7 +1,7 @@
 ﻿<Window x:Class="AlgGui.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Algorithm GUI" Height="500" Width="750" KeyDown="Window_KeyDown">
+        Title="Algorithm GUI" Height="500" Width="750" KeyDown="Window_KeyDown" MouseDown="world_MouseDown" MouseUp="world_MouseUp">
 	
 	<!-- Content -->
 	<Grid ShowGridLines="False">
@@ -11,7 +11,7 @@
 			<RowDefinition Height="200" />
 		</Grid.RowDefinitions>
 		
-		<Canvas Name="world"></Canvas>
+		<Canvas Grid.Row="0" Name="world"></Canvas>
 		
 		<Rectangle Grid.Row="1" Height="2" Fill="DarkCyan" />
 		

@@ -42,6 +42,13 @@ namespace AlgGui
 		public void setLabelText(string text) { label.Content = text; }
 		public int getID() { return id; }
 		public Rectangle getBody() { return body; }
+		public double getCurrentX() { return Canvas.GetLeft(body); }
+		public double getCurrentY() { return Canvas.GetTop(body); }
+		public double getRelativeX() { return bodyRelativeX; } // should only be necessary for middle clicking
+		public double getRelativeY() { return bodyRelativeY; }
+		public void setRelativeX(double x) { bodyRelativeX = x; }
+		public void setRelativeY(double y) { bodyRelativeY = y; }
+
 
 		// FUNCTIONS
 
@@ -124,6 +131,27 @@ namespace AlgGui
 			label.MouseDown += new MouseButtonEventHandler(label_MouseDown);
 		}
 
+		public void move(double x, double y)
+		{
+			// move body
+			Canvas.SetLeft(body, x);
+			Canvas.SetTop(body, y);
+
+			// move nodes
+			foreach (Node n in nodes)
+			{
+				Canvas.SetLeft(n.getBody(), x + n.getOffsetX());
+				Canvas.SetTop(n.getBody(), y + n.getOffsetY());
+			}
+
+			// move labels
+			Canvas.SetLeft(label, x + body.Width + 2);
+			Canvas.SetTop(label, y + (body.Height / 2) - (label.Height / 2));
+
+			Canvas.SetLeft(labelID, x);
+			Canvas.SetTop(labelID, y);
+		}
+
 
 		// EVENT HANDLERS
 
@@ -177,22 +205,7 @@ namespace AlgGui
 				double x = p.X - bodyRelativeX;
 				double y = p.Y - bodyRelativeY;
 
-				Canvas.SetLeft(body, x);
-				Canvas.SetTop(body, y);
-
-				// move nodes
-				foreach (Node n in nodes)
-				{
-					Canvas.SetLeft(n.getBody(), x + n.getOffsetX());
-					Canvas.SetTop(n.getBody(), y + n.getOffsetY());
-				}
-
-				// move labels
-				Canvas.SetLeft(label, x + body.Width + 2);
-				Canvas.SetTop(label, y + (body.Height / 2) - (label.Height / 2));
-
-				Canvas.SetLeft(labelID, x);
-				Canvas.SetTop(labelID, y);
+				this.move(x, y);
 			}
 		}
 	}

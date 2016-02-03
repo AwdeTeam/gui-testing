@@ -26,6 +26,8 @@ namespace AlgGui
 		private bool isDragging = false; // updated by individual components so don't stop dragging when mouse leaves
 		private Representation draggingRep = null;
 
+		private bool isDraggingScreen = false;
+
 		private List<string> commandHistory = new List<string>();
 		private int commandIndex = 0; // keeps track of where in command history you are
 
@@ -45,7 +47,7 @@ namespace AlgGui
 			Master.assignWindow(this);
 			log("Program initialized!");
 
-			addRect(10, 10, 40, 40);
+			//addRect(10, 10, 40, 40);
 			addRep(2, 1);
 			
 			this.MouseMove += world_MouseMove;
@@ -94,11 +96,48 @@ namespace AlgGui
 			isTyping = false;
 		}
 
+		// technically window_mousemove
 		private void world_MouseMove(object sender, MouseEventArgs e)
 		{
 			// if mouse has left the box it's dragging, manually call its event
 			if (isDragging) { draggingRep.body_MouseMove(sender, e); }
+			if (isDraggingScreen)
+			{
+				foreach (Representation r in representations.Values)
+				{
+					Point p = e.GetPosition(world);
+					double x = p.X - r.getRelativeX();
+					double y = p.Y - r.getRelativeY();
+					r.move(x, y);
+				}
+			}
 		}
+
+		// technically window instead of world as well (canvases don't handle events properly....)
+		private void world_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			if (e.MiddleButton == MouseButtonState.Pressed)
+			{
+				isDraggingScreen = true;
+				foreach (Representation r in representations.Values)
+				{
+					Point p = e.GetPosition(world);
+					r.setRelativeX(p.X - r.getCurrentX());
+					r.setRelativeY(p.Y - r.getCurrentY());
+				}
+			}
+		}
+
+		private void world_MouseUp(object sender, MouseButtonEventArgs e)
+		{
+			isDraggingScreen = false;
+			foreach (Representation r in representations.Values)
+			{
+				r.setRelativeX(0);
+				r.setRelativeY(0);
+			}
+		}
+
 
 		// ------------------------------------
 		//  FUNCTIONS
@@ -300,5 +339,8 @@ namespace AlgGui
 			log("rep[resentation] edit -[id] -[attr] -[value]\n\tattr: color, lbl", Colors.Yellow);
 		}
 		private void cmd_clearConsole() { lblConsole.Document.Blocks.Clear(); }
+
+	
+		
 	}
 }
