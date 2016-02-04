@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace AlgGui
 {
 	public class Connection
 	{
 		private Line body = new Line();
-		private Node node1, node2; //1 is input, 2 is output
+		private Node inNode, outNode; // same as below, but referenced for different reasons
 
 		private Node origin;
 		private Node end;
@@ -31,8 +32,8 @@ namespace AlgGui
 		{
 			Master.log("Connection initialized");
 			origin = start;
-			if (start.isInput()) { node1 = start; }
-			else { node2 = start; }
+			if (start.isInput()) { inNode = start; }
+			else { outNode = start; }
 			createDrawing();
 		}
 
@@ -41,15 +42,32 @@ namespace AlgGui
 		public bool isComplete() { return m_completed; }
 		public Line getBody() { return body; }
 
+		public Node getInputNode() { return inNode; }
+		public Node getOutputNode() { return outNode; }
 
-		public void completeConnection(Node other)
+		// returns true on success, false on failure
+		public bool completeConnection(Node other)
 		{
 			end = other;
-			if (node2 == null) { node2 = other; }
-			else { node1 = other; }
+			if (outNode == null) { outNode = other; }
+			else { inNode = other; }
+
+			// make sure the nodes aren't the same
+			if (origin.Equals(end))
+			{
+				Master.getCanvas().Children.Remove(body);
+				return false;
+			}
 
 			adjustSecondPoint((int)(end.getCurrentX() + end.getBody().Width / 2), (int)(end.getCurrentY() + end.getBody().Height / 2));
 			m_completed = true;
+
+			int inputRepID = inNode.getParent().getID();
+			int outputRepID = outNode.getParent().getID();
+			Master.log("Connection created - OutputID: " + outputRepID + " InputID: " + inputRepID);
+
+			body.IsHitTestVisible = true;
+			return true;
 		}
 
 		public void adjustRelatedPoint(Node node)
@@ -78,11 +96,30 @@ namespace AlgGui
 			body.Y1 = origin.getCurrentY() + origin.getBody().Height / 2; 
 			body.X2 = origin.getCurrentX();
 			body.Y2 = origin.getCurrentY();
-			body.IsHitTestVisible = false;
+			body.IsHitTestVisible = false; // make click-throughable
 			Canvas.SetZIndex(body, 0);
 
 			Master.getCanvas().Children.Add(body);
 			Master.setDraggingConnection(true, this);
+
+			body.MouseDown += new MouseButtonEventHandler(body_mouseDown);
+			body.MouseMove += new MouseEventHandler(body_mouseDown);
+		}
+
+
+		// EVENT HANDLERS
+
+		// this event handler is also added as a mousemove, so that you can click and drag to delete multiple connections
+		private void body_mouseDown(object sender, MouseEventArgs e)
+		{
+			if (e.RightButton == MouseButtonState.Pressed)
+			{
+				origin.removeConnection(this);
+				end.removeConnection(this);
+
+				Master.getCanvas().Children.Remove(body);
+				Master.log("Connection destroyed");
+			}
 		}
 	}
 }

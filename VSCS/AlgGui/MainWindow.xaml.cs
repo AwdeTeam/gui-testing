@@ -56,7 +56,7 @@ namespace AlgGui
 			//addRect(10, 10, 40, 40);
 			addRep(2, 1);
 			addRep(1, 1);
-			parseCommand("rep edit -1 -color -ff0000");
+			parseCommand("edit rep -1 -color -ff0000");
 			
 			this.MouseMove += world_MouseMove;
 		}
@@ -333,9 +333,9 @@ namespace AlgGui
 					addRep(ins, outs);
 				}
 			}
-			else if (keys[0] == "rep" || keys[0] == "representation")
+			else if (keys[0] == "edit")
 			{
-				if (keys[1] == "edit")
+				if (keys[1] == "rep" || keys[1] == "representation")
 				{
 					int id = Int32.Parse(vals[0]);
 					string attr = vals[1];
@@ -368,7 +368,8 @@ namespace AlgGui
 			log("clear | cls     // clears console", Colors.Yellow);
 			log("help", Colors.Yellow);
 			log("add rect[angle] -[x] -[y] -[width] -[height]\add rect[angle] -[x],[y],[width],[height]", Colors.Yellow);
-			log("rep[resentation] edit -[id] -[attr] -[value]\n\tattr: color, lbl", Colors.Yellow);
+			log("add rep[resentation] -[numInputs],[numOutputs]", Colors.Yellow);
+			log("edit rep[resentation] -[id] -[attr] -[value]\n\tattr: color, lbl", Colors.Yellow);
 		}
 		private void cmd_clearConsole() { lblConsole.Document.Blocks.Clear(); }
 

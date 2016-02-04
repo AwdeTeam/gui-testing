@@ -9,6 +9,10 @@ using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Input;
 
+// TODO: way to represent which group node it is (input1, input2, output1, output2) so can be referenced from command line
+
+// (connect format should be: "connect -[outputNodeRepresetnationID (from)],[nodeNum] -[inputNodeRepresentationID (to)],[nodeNum]
+
 namespace AlgGui
 {
 	public class Node
@@ -16,70 +20,74 @@ namespace AlgGui
 		// TODO: add labels on hover (right click allows you to change?)
 
 		// member variables
-		private Ellipse body = new Ellipse();
-		private Representation parent;
+		private Ellipse m_body = new Ellipse();
+		private Representation m_parent;
 
 		// NOTE: offsets are from TOP LEFT CORNER OF REPRESENTATION
-		private int offsetX = 0; 
-		private int offsetY = 0;
+		private int m_offsetX = 0; 
+		private int m_offsetY = 0;
 
-		private List<Connection> connections = new List<Connection>();
+		private List<Connection> m_connections = new List<Connection>();
 
 		bool m_isInput = true; // false means output
 
 		// construction
 		public Node(Representation parent, int x, int y, int offX, int offY, int size, bool isInput) // PASS IN X AND Y OF REPRESENTATION
 		{
-			this.parent = parent;
-			offsetX = offX;
-			offsetY = offY;
+			this.m_parent = parent;
+			m_offsetX = offX;
+			m_offsetY = offY;
 			m_isInput = isInput;
 
 			createDrawing(x, y, size);
 		}
 
 		// properties
-		public int getOffsetX() { return offsetX; }
-		public int getOffsetY() { return offsetY; }
+		public int getOffsetX() { return m_offsetX; }
+		public int getOffsetY() { return m_offsetY; }
 
-		public Ellipse getBody() { return body; }
+		public Ellipse getBody() { return m_body; }
 
-		public double getCurrentX() { return Canvas.GetLeft(body); }
-		public double getCurrentY() { return Canvas.GetTop(body); }
+		public Representation getParent() { return m_parent; }
+
+		public double getCurrentX() { return Canvas.GetLeft(m_body); }
+		public double getCurrentY() { return Canvas.GetTop(m_body); }
 
 		public bool isInput() { return m_isInput; }
 
-		public void addConnection(Connection c) { connections.Add(c); }
+		public void addConnection(Connection c) { m_connections.Add(c); }
+		public void removeConnection(Connection c) { m_connections.Remove(c); }
 		
 
 		private void createDrawing(int x, int y, int size)
 		{
 			// create body
 			//body = new Ellipse();
-			body.Fill = Brushes.White;
-			body.Stroke = new SolidColorBrush(Colors.Black);
-			body.StrokeThickness = 2;
-			body.Height = size;
-			body.Width = size;
+			m_body.Fill = Brushes.White;
+			m_body.Stroke = new SolidColorBrush(Colors.Black);
+			m_body.StrokeThickness = 2;
+			m_body.Height = size;
+			m_body.Width = size;
+			Canvas.SetZIndex(m_body, 10);
 
-			Canvas.SetLeft(body, x + offsetX);
-			Canvas.SetTop(body, y + offsetY);
+			Canvas.SetLeft(m_body, x + m_offsetX);
+			Canvas.SetTop(m_body, y + m_offsetY);
 
-			Master.getCanvas().Children.Add(body);
-			Master.log("Representation node created with offsets (" + offsetX + "," + offsetY + ")");
+			Master.getCanvas().Children.Add(m_body);
+			Master.log("Representation node created with offsets (" + m_offsetX + "," + m_offsetY + ")");
 
 			// create event handlers
-			body.MouseDown += new MouseButtonEventHandler(body_mouseDown);
-			body.MouseUp += new MouseButtonEventHandler(body_mouseUp);
+			m_body.MouseDown += new MouseButtonEventHandler(body_mouseDown);
+			m_body.MouseUp += new MouseButtonEventHandler(body_mouseUp);
 		}
 
 		public void move(double x, double y)
 		{
-			Canvas.SetLeft(body, x + offsetX);
-			Canvas.SetTop(body, y + offsetY);
+			Canvas.SetLeft(m_body, x + m_offsetX);
+			Canvas.SetTop(m_body, y + m_offsetY);
 
 			// update connections
-			foreach (Connection c in connections)
+			foreach (Connection c in m_connections)
 			{
 				c.adjustRelatedPoint(this);
 			}
@@ -91,7 +99,7 @@ namespace AlgGui
 		{
 			Master.log("Node has been clicked!", Colors.Tomato); // DEBUG
 		
-			Connection n = new Connection(this);
+			Connection con = new Connection(this);
 		}
 		private void body_mouseUp(object sender, MouseEventArgs e)
 		{
@@ -99,12 +107,12 @@ namespace AlgGui
 			if (Master.getDraggingConnection() != null)
 			{
 				Master.log("Released on node", Colors.Orchid); // DEBUG
-				Connection c = Master.getDraggingConnection();
-				c.completeConnection(this);
+				Connection con = Master.getDraggingConnection();
+				if (!con.completeConnection(this)) { return; }
 
 				// add connection to both node's collection
-				connections.Add(c);
-				c.getOrigin().addConnection(c);
+				m_connections.Add(con);
+				con.getOrigin().addConnection(con);
 
 				Master.setDraggingConnection(false, null);
 			}
