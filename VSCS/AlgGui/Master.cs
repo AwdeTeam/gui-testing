@@ -21,6 +21,8 @@ namespace AlgGui
 
 		public static Canvas getCanvas() { return win.getMainCanvas(); } // I know the name for this now!! Delegation!
 		public static void setDragging(bool dragging, Representation dragRep) { win.setDragging(dragging, dragRep); }
+		public static void setDraggingConnection(bool dragging, Connection con) { win.setDraggingConnection(dragging, con); }
+		public static Connection getDraggingConnection() { return win.getDraggingConnection(); }
 		public static void setCommandPrompt(string text) { win.setCommandPrompt(text); }
 
 		public static int getNextRepID() { RepID++; return RepID; }

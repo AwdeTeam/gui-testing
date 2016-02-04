@@ -95,13 +95,13 @@ namespace AlgGui
 			// input nodes
 			for (int i = 0; i < numIn; i++)
 			{
-				Node n = new Node(x, y, inStartPoint + i * NODE_SIZE, -NODE_SIZE, NODE_SIZE);
+				Node n = new Node(this, x, y, inStartPoint + i * NODE_SIZE, -NODE_SIZE, NODE_SIZE, true);
 				nodes.Add(n);
 			}
 			// output nodes
 			for (int i = 0; i < numOut; i++)
 			{
-				Node n = new Node(x, y, outStartPoint + i * NODE_SIZE, (int)body.Height, NODE_SIZE);
+				Node n = new Node(this, x, y, outStartPoint + i * NODE_SIZE, (int)body.Height, NODE_SIZE, false);
 				nodes.Add(n);
 			}
 
@@ -140,8 +140,9 @@ namespace AlgGui
 			// move nodes
 			foreach (Node n in nodes)
 			{
-				Canvas.SetLeft(n.getBody(), x + n.getOffsetX());
-				Canvas.SetTop(n.getBody(), y + n.getOffsetY());
+				//Canvas.SetLeft(n.getBody(), x + n.getOffsetX());
+				//Canvas.SetTop(n.getBody(), y + n.getOffsetY());
+				n.move(x, y);
 			}
 
 			// move labels

@@ -15,6 +15,9 @@ using System.Windows.Shapes;
 
 // TODO: can have input file representations?
 
+
+// NOTE: IF AN ELEMENT HAS A TRANSPARENT FILL (hasn't been assigned) IT CAN BE CLICKED THROUGH AND WILL NOT REGISTER EVENTS
+
 namespace AlgGui
 {
 	public partial class MainWindow : Window
@@ -27,6 +30,9 @@ namespace AlgGui
 		private Representation draggingRep = null;
 
 		private bool isDraggingScreen = false;
+
+		private bool isDraggingConnection = false;
+		private Connection draggingCon = null;
 
 		private List<string> commandHistory = new List<string>();
 		private int commandIndex = 0; // keeps track of where in command history you are
@@ -49,6 +55,8 @@ namespace AlgGui
 
 			//addRect(10, 10, 40, 40);
 			addRep(2, 1);
+			addRep(1, 1);
+			parseCommand("rep edit -1 -color -ff0000");
 			
 			this.MouseMove += world_MouseMove;
 		}
@@ -60,6 +68,13 @@ namespace AlgGui
 			isDragging = dragging; draggingRep = dragRep;
 			//log("dragging is " + dragging, Colors.Fuchsia); // DEBUG
 		}
+		public void setDraggingConnection(bool dragging, Connection con)
+		{
+			isDraggingConnection = true;
+			draggingCon = con;
+			log("connection dragging is " + dragging, Colors.Fuchsia); // DEBUG
+		}
+		public Connection getDraggingConnection() { return draggingCon; }
 
 		// ------------------------------------
 		//  EVENTS
@@ -111,6 +126,14 @@ namespace AlgGui
 					r.move(x, y);
 				}
 			}
+			if (isDraggingConnection)
+			{
+				Point p = e.GetPosition(world);
+				int x = (int)p.X;
+				int y = (int)p.Y;
+				//log("mouse point: " + x + " " + y, Colors.PaleTurquoise);
+				draggingCon.adjustSecondPoint(x, y);
+			}
 		}
 
 		// technically window instead of world as well (canvases don't handle events properly....)
@@ -130,11 +153,20 @@ namespace AlgGui
 
 		private void world_MouseUp(object sender, MouseButtonEventArgs e)
 		{
-			isDraggingScreen = false;
-			foreach (Representation r in representations.Values)
+			if (isDraggingScreen)
 			{
-				r.setRelativeX(0);
-				r.setRelativeY(0);
+				isDraggingScreen = false;
+				foreach (Representation r in representations.Values)
+				{
+					r.setRelativeX(0);
+					r.setRelativeY(0);
+				}
+			}
+			if (isDraggingConnection)
+			{
+				if (draggingCon != null && !draggingCon.isComplete()) { world.Children.Remove(draggingCon.getBody()); }
+				draggingCon = null;
+				isDraggingConnection = false;
 			}
 		}
 
