@@ -8,12 +8,17 @@ using System.Windows.Media;
 
 namespace AlgGui
 {
-	// loosely follows singleton pattern?
+	// Use this for necessary interactions between classes and window
+	// (so the window doesn't need to be passed into every class in order to have necessary functionality)
 	class Master
 	{
+		// private:
 		private static MainWindow win;
-		private static int RepID = -1;
+		private static int RepID = -1; // incrementing counter for assigning representation ids
 		
+		// public:
+
+		// NOTE: this should only be called once in main window constructor
 		public static void assignWindow(MainWindow window) { win = window; }
 
 		public static void log(string message) { win.log(message); }

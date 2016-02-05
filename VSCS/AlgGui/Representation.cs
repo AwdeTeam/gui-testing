@@ -19,7 +19,6 @@ namespace AlgGui
 		private int m_id = 0;
 		private Rectangle m_body = new Rectangle();
 		private List<Node> m_nodes = new List<Node>();
-		//private List<Ellipse> outNodes = new List<Ellipse>();
 
 		private Label m_lblName = new Label();
 		private Label m_lblID = new Label();
@@ -38,7 +37,7 @@ namespace AlgGui
 			createDrawing(100, 100, width, 40, numIn, numOut);
 		}
 
-		// PROPERTIES
+		// properties
 		public void setLabelText(string text) { m_lblName.Content = text; }
 		public int getID() { return m_id; }
 		public Rectangle getBody() { return m_body; }
@@ -50,8 +49,7 @@ namespace AlgGui
 		public void setRelativeY(double y) { m_bodyRelativeY = y; }
 
 
-		// FUNCTIONS
-
+		// -- FUNCTIONS --
 
 		// find least amount of space to fit all nodes
 		private int calcOptimalWidth(int numIn, int numOut)
@@ -62,10 +60,11 @@ namespace AlgGui
 			int widest = totalXIn;
 			if (totalXOut > widest) { widest = totalXOut; }
 
-			if (widest < 25) { widest = 25; }
+			if (widest < 25) { widest = 25; } // make it at least 25 pixels wide
 			return widest;
 		}
 
+		// initialize graphics
 		private void createDrawing(int x, int y, int w, int h, int numIn, int numOut)
 		{
 			// create body
@@ -89,20 +88,20 @@ namespace AlgGui
 
 			// create nodes
 
-			// find left of center point (for centering the two groups of nodes)
+			// find left of center point (for centering the two groups of nodes on the representation)
 			int inStartPoint = (int)((m_body.Width - (numIn * NODE_SIZE)) / 2);
 			int outStartPoint = (int)((m_body.Width - (numOut * NODE_SIZE)) / 2);
 			
 			// input nodes
 			for (int i = 0; i < numIn; i++)
 			{
-				Node n = new Node(this, x, y, inStartPoint + i * NODE_SIZE, -NODE_SIZE, NODE_SIZE, true);
+				Node n = new Node(this, x, y, inStartPoint + i * NODE_SIZE, -NODE_SIZE, NODE_SIZE, true, i);
 				m_nodes.Add(n);
 			}
 			// output nodes
 			for (int i = 0; i < numOut; i++)
 			{
-				Node n = new Node(this, x, y, outStartPoint + i * NODE_SIZE, (int)m_body.Height, NODE_SIZE, false);
+				Node n = new Node(this, x, y, outStartPoint + i * NODE_SIZE, (int)m_body.Height, NODE_SIZE, false, i);
 				m_nodes.Add(n);
 			}
 
@@ -133,6 +132,8 @@ namespace AlgGui
 			m_lblName.MouseDown += new MouseButtonEventHandler(label_MouseDown);
 		}
 
+		// this moves the representation...self documentation ftw
+		// NOTE: leave this public, can later be accessed from command line? (for command scripts)
 		public void move(double x, double y)
 		{
 			// move body
@@ -142,8 +143,6 @@ namespace AlgGui
 			// move nodes
 			foreach (Node n in m_nodes)
 			{
-				//Canvas.SetLeft(n.getBody(), x + n.getOffsetX());
-				//Canvas.SetTop(n.getBody(), y + n.getOffsetY());
 				n.move(x, y);
 			}
 
@@ -155,16 +154,15 @@ namespace AlgGui
 			Canvas.SetTop(m_lblID, y);
 		}
 
-		// EVENT HANDLERS
+		// -- EVENT HANDLERS --
 
+		// if click on label, auto put text in command line to edit label content
 		private void label_MouseDown(object sender, MouseEventArgs e)
 		{
 			Master.log("Preparing to update label");
 			Master.setCommandPrompt("edit rep -" + m_id + " -lbl -\"");
 		}
 
-		// TODO: differentiate between right click and left click (right click to change color?)
-		// don't forget to add a function in Master to change the command prompt line
 		private void body_MouseDown(object sender, MouseEventArgs e)
 		{
 			if (e.LeftButton == MouseButtonState.Pressed)
@@ -185,6 +183,7 @@ namespace AlgGui
 			}
 			else if (e.RightButton == MouseButtonState.Pressed)
 			{
+				// right clicking on representation quick-puts text in command line to allow editing properties of rep
 				Master.log("Right click", Colors.DarkSeaGreen); // DEBUG
 				Master.log("Editing representation id " + m_id);
 				Master.setCommandPrompt("edit rep -" + m_id + " -");

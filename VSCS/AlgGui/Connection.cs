@@ -12,112 +12,121 @@ namespace AlgGui
 {
 	public class Connection
 	{
-		private Line body = new Line();
-		private Node inNode, outNode; // same as below, but referenced for different reasons
+		// member variables
+		private Line m_body = new Line();
+		private Node m_inNode, m_outNode; // same as below, but referenced for different reasons
 
-		private Node origin;
-		private Node end;
+		private Node m_origin;
+		private Node m_end;
 
-		private bool m_completed = false;
+		private bool m_completed = false; // if connection has been created/assigned to two nodes
 
-		//private bool initial = true;
-
-		/*public Connection(Node n1, Node n2)
-		{
-			node1 = n1;
-			node2 = n2;
-		}*/
-
+		// construction
 		public Connection(Node start)
 		{
 			Master.log("Connection initialized");
-			origin = start;
-			if (start.isInput()) { inNode = start; }
-			else { outNode = start; }
+			m_origin = start;
+			if (start.isInput()) { m_inNode = start; }
+			else { m_outNode = start; }
 			createDrawing();
 		}
 
-		public Node getOrigin() { return origin; }
-		public Node getEnd() { return end; }
+		// properties
+		public Node getOrigin() { return m_origin; }
+		public Node getEnd() { return m_end; }
+
 		public bool isComplete() { return m_completed; }
-		public Line getBody() { return body; }
+		public Line getBody() { return m_body; }
 
-		public Node getInputNode() { return inNode; }
-		public Node getOutputNode() { return outNode; }
+		public Node getInputNode() { return m_inNode; }
+		public Node getOutputNode() { return m_outNode; }
 
+		// -- FUNCTIONS --
+
+		// finishes creating connection/adds connection to both involved nodes
 		// returns true on success, false on failure
+		// TODO: Need to check not connecting representation to self
 		public bool completeConnection(Node other)
 		{
-			end = other;
-			if (outNode == null) { outNode = other; }
-			else { inNode = other; }
+			m_end = other;
+			if (m_outNode == null) { m_outNode = other; }
+			else { m_inNode = other; }
 
 			// make sure the nodes aren't the same
-			if (origin.Equals(end))
+			if (m_origin.Equals(m_end))
 			{
-				Master.getCanvas().Children.Remove(body);
+				Master.getCanvas().Children.Remove(m_body);
 				return false;
 			}
 
-			adjustSecondPoint((int)(end.getCurrentX() + end.getBody().Width / 2), (int)(end.getCurrentY() + end.getBody().Height / 2));
+			// set end point to end node center
+			adjustSecondPoint((int)(m_end.getCurrentX() + m_end.getBody().Width / 2), (int)(m_end.getCurrentY() + m_end.getBody().Height / 2));
 			m_completed = true;
 
-			int inputRepID = inNode.getParent().getID();
-			int outputRepID = outNode.getParent().getID();
-			Master.log("Connection created - OutputID: " + outputRepID + " InputID: " + inputRepID);
+			int inputRepID = m_inNode.getParent().getID();
+			int inputNodeID = m_inNode.getGroupNum();
+			int outputRepID = m_outNode.getParent().getID();
+			int outputNodeID = m_outNode.getGroupNum();
+			Master.log("Connection created - OutputID: " + outputRepID + " (out-node " + outputNodeID + ") InputID: " + inputRepID + " (in-node " + inputNodeID + ")");
 
-			body.IsHitTestVisible = true;
+			m_body.IsHitTestVisible = true; // make clickable
 			return true;
 		}
 
+		// moves the end of the line attached to passed node
 		public void adjustRelatedPoint(Node node)
 		{
-			if (node.Equals(origin)) { adjustFirstPoint((int)(origin.getCurrentX() + origin.getBody().Width / 2), (int)(origin.getCurrentY() + origin.getBody().Height / 2)); }
-			else if (node.Equals(end)) { adjustSecondPoint((int)(end.getCurrentX() + end.getBody().Width / 2), (int)(end.getCurrentY() + end.getBody().Height / 2)); }
+			if (node.Equals(m_origin)) { adjustFirstPoint((int)(m_origin.getCurrentX() + m_origin.getBody().Width / 2), (int)(m_origin.getCurrentY() + m_origin.getBody().Height / 2)); }
+			else if (node.Equals(m_end)) { adjustSecondPoint((int)(m_end.getCurrentX() + m_end.getBody().Width / 2), (int)(m_end.getCurrentY() + m_end.getBody().Height / 2)); }
 		}
 
+		// adjusts "origin" connected point
 		public void adjustFirstPoint(int x, int y)
 		{
-			body.X1 = x;
-			body.Y1 = y;
+			m_body.X1 = x;
+			m_body.Y1 = y;
 		}
 
+		// adjusts "end" connected point
 		public void adjustSecondPoint(int x, int y)
 		{
-			body.X2 = x;
-			body.Y2 = y;
+			m_body.X2 = x;
+			m_body.Y2 = y;
 		}
 
+		// initialize graphics
 		private void createDrawing()
 		{
-			body.Stroke = Brushes.Black;
-			body.StrokeThickness = 2;
-			body.X1 = origin.getCurrentX() + origin.getBody().Width / 2;
-			body.Y1 = origin.getCurrentY() + origin.getBody().Height / 2; 
-			body.X2 = origin.getCurrentX();
-			body.Y2 = origin.getCurrentY();
-			body.IsHitTestVisible = false; // make click-throughable
-			Canvas.SetZIndex(body, 0);
+			m_body.Stroke = Brushes.Black;
+			m_body.StrokeThickness = 2;
+			m_body.X1 = m_origin.getCurrentX() + m_origin.getBody().Width / 2;
+			m_body.Y1 = m_origin.getCurrentY() + m_origin.getBody().Height / 2; 
+			m_body.X2 = m_origin.getCurrentX();
+			m_body.Y2 = m_origin.getCurrentY();
+			m_body.IsHitTestVisible = false; // make click-throughable
+			Canvas.SetZIndex(m_body, 0);
 
-			Master.getCanvas().Children.Add(body);
+			Master.getCanvas().Children.Add(m_body);
 			Master.setDraggingConnection(true, this);
 
-			body.MouseDown += new MouseButtonEventHandler(body_mouseDown);
-			body.MouseMove += new MouseEventHandler(body_mouseDown);
+			// attach event handlers
+			m_body.MouseDown += new MouseButtonEventHandler(body_mouseDown);
+			m_body.MouseMove += new MouseEventHandler(body_mouseDown);
 		}
 
 
-		// EVENT HANDLERS
+		// -- EVENT HANDLERS --
 
 		// this event handler is also added as a mousemove, so that you can click and drag to delete multiple connections
 		private void body_mouseDown(object sender, MouseEventArgs e)
 		{
 			if (e.RightButton == MouseButtonState.Pressed)
 			{
-				origin.removeConnection(this);
-				end.removeConnection(this);
+				// remove all the things! (effectively delete connection)
+				m_origin.removeConnection(this);
+				m_end.removeConnection(this);
 
-				Master.getCanvas().Children.Remove(body);
+				Master.getCanvas().Children.Remove(m_body);
 				Master.log("Connection destroyed");
 			}
 		}

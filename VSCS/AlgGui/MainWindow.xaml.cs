@@ -23,41 +23,42 @@ namespace AlgGui
 	public partial class MainWindow : Window
 	{
 		// member variables
-		private bool isTyping = false; // meant to counteract window auto focusing textbox even if already typing there
-		private bool isTypingNotAvail = false; // set to true if need to type elsewhere so doesn't auto put cursor in console when start to type
+		private bool m_isTyping = false; // meant to counteract window auto focusing textbox even if already typing there
+		private bool m_isTypingNotAvail = false; // set to true if need to type elsewhere so doesn't auto put cursor in console when start to type
 
-		private bool isDragging = false; // updated by individual components so don't stop dragging when mouse leaves
-		private Representation draggingRep = null;
+		private bool m_isDragging = false; // updated by individual components so don't stop dragging when mouse leaves
+		private Representation m_draggingRep = null;
 
-		private bool isDraggingScreen = false;
+		private bool m_isDraggingScreen = false; // panning entire screen
 
-		private bool isDraggingConnection = false;
-		private Connection draggingCon = null;
+		private bool m_isDraggingConnection = false;
+		private Connection m_draggingCon = null;
 
-		private List<string> commandHistory = new List<string>();
-		private int commandIndex = 0; // keeps track of where in command history you are
+		private List<string> m_commandHistory = new List<string>();
+		private int m_commandIndex = 0; // keeps track of where in command history you are
 
+		// hashmap is probably unnecessary, but I actually understand how they work now, so yeah ^_^
+		private Dictionary<int, Representation> m_representations = new Dictionary<int, Representation>();
 
-		//private List<Representation> representations = new List<Representation>();
-		private Dictionary<int, Representation> representations = new Dictionary<int, Representation>();
-
-		// log channel
+		// log channel (not implemented yet)
 		const int NORMAL = 0;
 		const int DEBUG = 1;
 		const int VERBOSE = 2;
 
+		// construction
 		public MainWindow()
 		{
 			InitializeComponent();
 			cmd_clearConsole();
 			Master.assignWindow(this);
 			log("Program initialized!");
-
-			//addRect(10, 10, 40, 40);
+			
+			// test representations
 			addRep(2, 1);
 			addRep(1, 1);
 			parseCommand("edit rep -1 -color -ff0000");
 			
+			// canvas initially wasn't handling events properly, so adding them to window instead
 			this.MouseMove += world_MouseMove;
 		}
 
@@ -65,28 +66,28 @@ namespace AlgGui
 		public Canvas getMainCanvas() { return world; }
 		public void setDragging(bool dragging, Representation dragRep) 
 		{ 
-			isDragging = dragging; draggingRep = dragRep;
+			m_isDragging = dragging; m_draggingRep = dragRep;
 			//log("dragging is " + dragging, Colors.Fuchsia); // DEBUG
 		}
 		public void setDraggingConnection(bool dragging, Connection con)
 		{
-			isDraggingConnection = true;
-			draggingCon = con;
+			m_isDraggingConnection = true;
+			m_draggingCon = con;
 			log("connection dragging is " + dragging, Colors.Fuchsia); // DEBUG
 		}
-		public Connection getDraggingConnection() { return draggingCon; }
+		public Connection getDraggingConnection() { return m_draggingCon; }
 
 		// ------------------------------------
-		//  EVENTS
+		//  EVENT HANDLERS
 		// ------------------------------------
 
 		// If user starts typing (and wasn't typing in some other field), put cursor in command line bar
 		private void Window_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (isTypingNotAvail) { return; }
-			if (isTyping) { return; }
+			if (m_isTypingNotAvail) { return; }
+			if (m_isTyping) { return; }
 
-			isTyping = true;
+			m_isTyping = true;
 			txtConsoleCommand.Focus();
 			txtConsoleCommand.CaretIndex = txtConsoleCommand.Text.Length; // move cursor to end of line
 		}
@@ -96,29 +97,30 @@ namespace AlgGui
 		{
 			//log("Key was pressed"); // DEBUG
 			if (e.Key == Key.Enter) { enterConsoleCommand(); }
-			else if (e.Key == Key.Up || e.Key == Key.Down)
+			else if (e.Key == Key.Up || e.Key == Key.Down) // scroll command history
 			{
-				if (e.Key == Key.Up) { commandIndex--; }
-				else { commandIndex++; }
-				if (commandIndex < 0 || commandIndex >= commandHistory.Count) { txtConsoleCommand.Text = ""; }
-				else { txtConsoleCommand.Text = commandHistory[commandIndex]; }
+				if (e.Key == Key.Up) { m_commandIndex--; }
+				else { m_commandIndex++; }
+				if (m_commandIndex < 0 || m_commandIndex >= m_commandHistory.Count) { txtConsoleCommand.Text = ""; }
+				else { txtConsoleCommand.Text = m_commandHistory[m_commandIndex]; }
 			}
 			else if (e.Key == Key.Escape) { txtConsoleCommand.Text = ""; }
 		}
 
 		private void txtConsoleCommand_LostFocus(object sender, RoutedEventArgs e)
 		{
-			isTyping = false;
+			m_isTyping = false;
 		}
 
 		// technically window_mousemove
 		private void world_MouseMove(object sender, MouseEventArgs e)
 		{
 			// if mouse has left the box it's dragging, manually call its event
-			if (isDragging) { draggingRep.body_MouseMove(sender, e); }
-			if (isDraggingScreen)
+			if (m_isDragging) { m_draggingRep.body_MouseMove(sender, e); }
+			if (m_isDraggingScreen)
 			{
-				foreach (Representation r in representations.Values)
+				// if panning screen, move ALL things
+				foreach (Representation r in m_representations.Values)
 				{
 					Point p = e.GetPosition(world);
 					double x = p.X - r.getRelativeX();
@@ -126,13 +128,13 @@ namespace AlgGui
 					r.move(x, y);
 				}
 			}
-			if (isDraggingConnection)
+			if (m_isDraggingConnection)
 			{
 				Point p = e.GetPosition(world);
 				int x = (int)p.X;
 				int y = (int)p.Y;
-				//log("mouse point: " + x + " " + y, Colors.PaleTurquoise);
-				draggingCon.adjustSecondPoint(x, y);
+				//log("mouse point: " + x + " " + y, Colors.PaleTurquoise); // DEBUG
+				m_draggingCon.adjustSecondPoint(x, y);
 			}
 		}
 
@@ -141,8 +143,8 @@ namespace AlgGui
 		{
 			if (e.MiddleButton == MouseButtonState.Pressed)
 			{
-				isDraggingScreen = true;
-				foreach (Representation r in representations.Values)
+				m_isDraggingScreen = true;
+				foreach (Representation r in m_representations.Values)
 				{
 					Point p = e.GetPosition(world);
 					r.setRelativeX(p.X - r.getCurrentX());
@@ -153,20 +155,20 @@ namespace AlgGui
 
 		private void world_MouseUp(object sender, MouseButtonEventArgs e)
 		{
-			if (isDraggingScreen)
+			if (m_isDraggingScreen)
 			{
-				isDraggingScreen = false;
-				foreach (Representation r in representations.Values)
+				m_isDraggingScreen = false;
+				foreach (Representation r in m_representations.Values)
 				{
 					r.setRelativeX(0);
 					r.setRelativeY(0);
 				}
 			}
-			if (isDraggingConnection)
+			if (m_isDraggingConnection)
 			{
-				if (draggingCon != null && !draggingCon.isComplete()) { world.Children.Remove(draggingCon.getBody()); }
-				draggingCon = null;
-				isDraggingConnection = false;
+				if (m_draggingCon != null && !m_draggingCon.isComplete()) { world.Children.Remove(m_draggingCon.getBody()); }
+				m_draggingCon = null;
+				m_isDraggingConnection = false;
 			}
 		}
 
@@ -177,6 +179,8 @@ namespace AlgGui
 
 		public void setCommandPrompt(string prompt) { txtConsoleCommand.Text = prompt; txtConsoleCommand.CaretIndex = txtConsoleCommand.Text.Length; }
 
+		// add random rectangle, cause why not.
+		// NOTE: unneeded function at this point
 		private void addRect(int x, int y, int w, int h)
 		{
 			Rectangle square = new Rectangle();
@@ -190,15 +194,16 @@ namespace AlgGui
 			log("Added rectangle at x = " + x + ", y = " + y + ", of width " + w + ", and height " + h);
 		}
 
+		// create representation (eventually this should be based SOLELY on an imported algorithm, not created manually)
 		private void addRep(int inputs, int outputs)
 		{
 			Representation r = new Representation(inputs, outputs);
-			representations.Add(r.getID(), r);
+			m_representations.Add(r.getID(), r);
 		}
 
 		private void loadData(string fileName)
 		{
-
+			// load me
 		}
 
 		public void log(string message) { log(message, Colors.DarkCyan); }
@@ -223,8 +228,8 @@ namespace AlgGui
 			txtConsoleCommand.Focus(); // make sure command line retains focus
 
 			// add to command history
-			commandHistory.Add(command);
-			commandIndex = commandHistory.Count;
+			m_commandHistory.Add(command);
+			m_commandIndex = m_commandHistory.Count;
 
 			// check for and run command
 			try { parseCommand(command); }
@@ -235,6 +240,10 @@ namespace AlgGui
 			}
 		}
 
+		// take a command string and figure out what's what (USE THIS FOR HANDLING COMMAND SCRIPTS)
+		// NOTE: this function is NOT setup to handle more than one set of quotes in an entire command
+		// (essentially adds every space-delimited word to a prelist, then selectively adds to actual word
+		//   list, combining multiple into one 'word' if quotes were detected)
 		private void parseCommand(string command)
 		{
 			List<string> prePassWords = new List<string>(); // used for handling quoted text
@@ -242,13 +251,6 @@ namespace AlgGui
 
 			List<string> keys = new List<string>();
 			List<string> vals = new List<string>();
-
-
-			// find and replace any spaces NOT inside of quotes
-			if (command.IndexOf("\"") != -1)
-			{
-				string before = command.Substring(0, command.IndexOf("\""));
-			}
 
 			// get all words within quotes and condense
 			prePassWords = command.Split(' ').ToList();
@@ -260,7 +262,7 @@ namespace AlgGui
 					// check for just one word in quotes
 					if (word.Substring(word.IndexOf("\"") + 1).Contains("\"")) { word = word.Replace("\"", ""); words.Add(word); continue; }
 
-					// go through until hit another quote
+					// go through and append into single 'word' until hit another quote
 					string nextWord = prePassWords[i + 1];
 					do
 					{
@@ -292,6 +294,9 @@ namespace AlgGui
 			}
 		}
 
+		// NOTE: rough command syntax convention: [VERB] [NOUN] [-VALSLIST]
+		// NOTE: No need to make basic validation checks for if keys[1] exists etc, try catch in parseCommand will handle
+		// based on parsed command, figure out what function to execute
 		private void handleCommand(List<string> keys, List<string> vals)
 		{
 			if (keys[0] == "exit" || keys[0] == "quit") { cmd_exit(); }
@@ -341,7 +346,7 @@ namespace AlgGui
 					string attr = vals[1];
 					string val = vals[2];
 
-					Representation r = representations[id];
+					Representation r = m_representations[id];
 
 					if (attr == "lbl") 
 					{ 
@@ -372,8 +377,5 @@ namespace AlgGui
 			log("edit rep[resentation] -[id] -[attr] -[value]\n\tattr: color, lbl", Colors.Yellow);
 		}
 		private void cmd_clearConsole() { lblConsole.Document.Blocks.Clear(); }
-
-	
-		
 	}
 }
