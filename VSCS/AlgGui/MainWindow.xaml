@@ -4,6 +4,7 @@
         Title="Algorithm GUI" Height="500" Width="750" KeyDown="Window_KeyDown" MouseDown="world_MouseDown" MouseUp="world_MouseUp">
 	
 	<!-- Content -->
+	
 	<Grid ShowGridLines="False">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*"/>
