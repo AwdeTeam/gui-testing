@@ -52,8 +52,8 @@ namespace AlgGui
 			if (m_outNode == null) { m_outNode = other; }
 			else { m_inNode = other; }
 
-			// make sure the nodes aren't the same
-			if (m_origin.Equals(m_end))
+			// make sure the nodes aren't the same and are not both inputs or outputs
+			if (m_origin.Equals(m_end) || m_origin.isInput() == m_end.isInput() || m_origin.getParent() == m_end.getParent())
 			{
 				Master.getCanvas().Children.Remove(m_body);
 				return false;

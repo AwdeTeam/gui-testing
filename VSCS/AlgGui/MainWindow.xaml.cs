@@ -56,7 +56,9 @@ namespace AlgGui
 			// test representations
 			addRep(2, 1);
 			addRep(1, 1);
-			parseCommand("edit rep -1 -color -ff0000");
+            /*Representation r = new AlgorithmRepresentation(2, 3);
+            m_representations.Add(r.getID(), r);
+			parseCommand("edit rep -1 -color -ff0000");*/
 			
 			// canvas initially wasn't handling events properly, so adding them to window instead
 			this.MouseMove += world_MouseMove;
@@ -354,8 +356,8 @@ namespace AlgGui
 						log("Updated representation label to '" + val + "'");
 					}
 					else if (attr == "color") 
-					{ 
-						r.getBody().Fill = (SolidColorBrush)(new BrushConverter().ConvertFrom("#" + val));
+					{
+                        r.m_baseColor = ((SolidColorBrush)(new BrushConverter().ConvertFrom("#" + val))).Color; 
 						log("Updated representation color to #" + val);
 					}
 				}
