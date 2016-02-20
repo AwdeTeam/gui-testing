@@ -20,30 +20,31 @@ namespace AlgGui
 		// member variables
 		protected int m_id = 0;
 		protected Rectangle m_body = new Rectangle();
-        //private Rectangle m_outline = new Rectangle();
-		protected List<Node> m_nodes = new List<Node>();
+        protected Rectangle m_board = new Rectangle();
+        protected List<Node> m_nodes = new List<Node>();
 
-		protected Label m_lblName = new Label();
-		protected Label m_lblID = new Label();
-        TextBox m_txtContent = new TextBox();
+        protected int m_leftPadding = 6;
+        protected int m_topPadding = 24;
 
 		protected bool m_isBodyClicked = false;
         protected bool m_hasFocus = false;
 		protected double m_bodyRelativeX = 0; // relative coordinates from body to where mouse clicked
         protected double m_bodyRelativeY = 0;
 
-        //Shape m_base = new Shape();
+        protected Datatype[] inputs;
+        protected Datatype[] outputs;
 
-        String m_name = "A name for an Algorithm";
-        String m_version = "##.## XXX";
-        AlgorithmFamily m_family = AlgorithmFamily.Operation;
-        String m_algorithm = "No-Op"; //So... this should probably be merged with the id system in the Python code
+        //Information Variables
+        public Label m_lblName = new Label();
+        public Label m_lblID = new Label();
+        public TextBox m_txtContent = new TextBox();
 
-        int m_leftPadding = 6;
-        int m_topPadding = 24;
+        public String m_name = "unnamed algorithm";
+        public String m_version = "##.## XXX";
+        public AlgorithmFamily m_family = AlgorithmFamily.Operation;
+        public String m_algorithm = "No-Op"; //TODO Merge with Python Algorithm IDs
 
         public Color m_baseColor = Colors.SeaGreen;
-        Rectangle m_board = new Rectangle();
 
 		// construction
 		public Representation(int numIn, int numOut)
@@ -54,6 +55,17 @@ namespace AlgGui
 			int width = calcOptimalWidth(numIn, numOut) + 60;
 			createDrawing(100, 100, width, 80, numIn, numOut);
 		}
+
+        public Representation(Datatype[] inputs, Datatype[] outputs)
+        {
+            Master.log("----Creating representation----");
+            m_id = Master.getNextRepID();
+            Master.log("ID: " + m_id, Colors.GreenYellow);
+            int width = calcOptimalWidth(inputs.Length, outputs.Length) + 60;
+            this.inputs = inputs;
+            this.outputs = outputs;
+            createDrawing(100, 100, width, 80, inputs.Length, outputs.Length);
+        }
 
 		// properties
 		public void setLabelText(string text) { m_lblName.Content = text; }
@@ -117,7 +129,7 @@ namespace AlgGui
             m_board.MouseUp += new MouseButtonEventHandler(body_MouseUp);
             m_board.MouseMove += new System.Windows.Input.MouseEventHandler(body_MouseMove); //Argh!!!
 
-
+       
             m_body.MouseDown += new MouseButtonEventHandler(body_MouseDown);
             m_body.MouseUp += new MouseButtonEventHandler(body_MouseUp);
             m_body.MouseMove += new System.Windows.Input.MouseEventHandler(body_MouseMove);
@@ -132,12 +144,14 @@ namespace AlgGui
             for (int i = 0; i < numIn; i++)
             {
                 Node n = new Node(this, x, y, inStartPoint + i * NODE_SIZE, -NODE_SIZE, NODE_SIZE, true, i);
+                n.datatype = inputs == null ? null : inputs[i];
                 m_nodes.Add(n);
             }
             // output nodes
             for (int i = 0; i < numOut; i++)
             {
                 Node n = new Node(this, x, y, outStartPoint + i * NODE_SIZE, (int)m_body.Height, NODE_SIZE, false, i);
+                n.datatype = outputs == null ? null : outputs[i];
                 m_nodes.Add(n);
             }
 

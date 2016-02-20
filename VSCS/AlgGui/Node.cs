@@ -30,6 +30,8 @@ namespace AlgGui
 		private bool m_isInput = true; // false means this is output node
 		private int m_groupNum = 0; // semi-id system, which node of input/output is it? (ex: 2nd input node etc) NOTE: 0-based
 
+        public Datatype datatype = null;
+        
 		// construction
 		public Node(Representation parent, int x, int y, int offX, int offY, int size, bool isInput, int groupNum) // PASS IN X AND Y OF REPRESENTATION
 		{
@@ -58,6 +60,8 @@ namespace AlgGui
 
 		public void addConnection(Connection c) { m_connections.Add(c); }
 		public void removeConnection(Connection c) { m_connections.Remove(c); }
+        public int getNumConnections() { return m_connections.Count;  }
+        public Connection getConnection(int i) { return m_connections[i]; }
 		
 		// -- FUNCTIONS --
 

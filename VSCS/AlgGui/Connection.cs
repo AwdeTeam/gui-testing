@@ -18,15 +18,26 @@ namespace AlgGui
 
 		private Node m_origin;
 		private Node m_end;
+        private Color m_color = Colors.Black;
 
 		private bool m_completed = false; // if connection has been created/assigned to two nodes
+
+        private Label m_typename = new Label();
 
 		// construction
 		public Connection(Node start)
 		{
 			Master.log("Connection initialized");
 			m_origin = start;
-			if (start.isInput()) { m_inNode = start; }
+			if (start.isInput()) 
+            {
+                m_inNode = start;
+                if(start.getNumConnections() > 0)
+                {
+                    Connection x = start.getConnection(0);
+                    x.removeConnection();
+                }
+            }
 			else { m_outNode = start; }
 			createDrawing();
 		}
@@ -53,15 +64,25 @@ namespace AlgGui
 			else { m_inNode = other; }
 
 			// make sure the nodes aren't the same and are not both inputs or outputs
-			if (m_origin.Equals(m_end) || m_origin.isInput() == m_end.isInput() || m_origin.getParent() == m_end.getParent())
+			if (m_origin.Equals(m_end) || m_origin.isInput() == m_end.isInput() || 
+                m_origin.getParent() == m_end.getParent() || 
+                !m_origin.datatype.fits(m_end.datatype))
 			{
 				Master.getCanvas().Children.Remove(m_body);
+                Master.getCanvas().Children.Remove(m_typename);
 				return false;
 			}
+
+            if(!m_origin.datatype.equals(m_end.datatype))
+            {
+                m_color = Colors.Orange;
+                m_body.Stroke = new SolidColorBrush(m_color);
+            }
 
 			// set end point to end node center
 			adjustSecondPoint((int)(m_end.getCurrentX() + m_end.getBody().Width / 2), (int)(m_end.getCurrentY() + m_end.getBody().Height / 2));
 			m_completed = true;
+            Master.getCanvas().Children.Remove(m_typename);
 
 			int inputRepID = m_inNode.getParent().getID();
 			int inputNodeID = m_inNode.getGroupNum();
@@ -92,12 +113,17 @@ namespace AlgGui
 		{
 			m_body.X2 = x;
 			m_body.Y2 = y;
+            if (m_completed == false)
+            {
+                Canvas.SetLeft(m_typename, m_body.X2);
+                Canvas.SetTop(m_typename, m_body.Y2);
+            }
 		}
 
 		// initialize graphics
 		private void createDrawing()
 		{
-			m_body.Stroke = Brushes.Black;
+            m_body.Stroke = new SolidColorBrush(m_color);
 			m_body.StrokeThickness = 2;
 			m_body.X1 = m_origin.getCurrentX() + m_origin.getBody().Width / 2;
 			m_body.Y1 = m_origin.getCurrentY() + m_origin.getBody().Height / 2; 
@@ -108,6 +134,14 @@ namespace AlgGui
 
 			Master.getCanvas().Children.Add(m_body);
 			Master.setDraggingConnection(true, this);
+
+            if (m_origin.datatype != null && m_completed == false)
+            {
+                m_typename.Content = m_origin.datatype.getName();
+                Canvas.SetLeft(m_typename, m_body.X2);
+                Canvas.SetTop(m_typename, m_body.Y2);
+                Master.getCanvas().Children.Add(m_typename);
+            }
 
 			// attach event handlers
 			m_body.MouseDown += new MouseButtonEventHandler(body_mouseDown);
@@ -120,15 +154,18 @@ namespace AlgGui
 		// this event handler is also added as a mousemove, so that you can click and drag to delete multiple connections
 		private void body_mouseDown(object sender, MouseEventArgs e)
 		{
-			if (e.RightButton == MouseButtonState.Pressed)
-			{
-				// remove all the things! (effectively delete connection)
-				m_origin.removeConnection(this);
-				m_end.removeConnection(this);
-
-				Master.getCanvas().Children.Remove(m_body);
-				Master.log("Connection destroyed");
-			}
+            if (e.RightButton == MouseButtonState.Pressed) { removeConnection();  }
 		}
+
+        public void removeConnection()
+        {
+            // remove all the things! (effectively delete connection)
+            m_origin.removeConnection(this);
+            m_end.removeConnection(this);
+
+            Master.getCanvas().Children.Remove(m_body);
+            Master.getCanvas().Children.Remove(m_typename);
+            Master.log("Connection destroyed");
+        }
 	}
 }

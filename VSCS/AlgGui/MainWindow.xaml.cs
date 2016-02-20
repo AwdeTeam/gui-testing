@@ -48,14 +48,21 @@ namespace AlgGui
 		// construction
 		public MainWindow()
 		{
+
 			InitializeComponent();
 			cmd_clearConsole();
 			Master.assignWindow(this);
 			log("Program initialized!");
+            Datatype.testingTypes();
+            Datatype t0 = Datatype.getType(0);
+            Datatype t1 = Datatype.getType(1);
+            Datatype t2 = Datatype.aggregateTypes("Dataheavy Image", t0, t1);
+            Datatype t3 = Datatype.aggregateTypes("Datasheavy Image", t0, t1);
 			
 			// test representations
-			addRep(2, 1);
-			addRep(1, 1);
+			addRep(new Datatype[] {t0, t1}, new Datatype[] {t2});
+            addRep(new Datatype[] {t0}, new Datatype[] {t0});
+            addRep(new Datatype[] { t3 }, new Datatype[] { t0 });
             /*Representation r = new AlgorithmRepresentation(2, 3);
             m_representations.Add(r.getID(), r);
 			parseCommand("edit rep -1 -color -ff0000");*/
@@ -202,6 +209,12 @@ namespace AlgGui
 			Representation r = new Representation(inputs, outputs);
 			m_representations.Add(r.getID(), r);
 		}
+
+        private void addRep(Datatype[] inputs, Datatype[] outputs)
+        {
+            Representation r = new Representation(inputs, outputs);
+            m_representations.Add(r.getID(), r);
+        }
 
 		private void loadData(string fileName)
 		{
