@@ -54,10 +54,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ConnectionGraphic.cs" />
     <Compile Include="Datatype.cs" />
     <Compile Include="Connection.cs" />
+    <Compile Include="GraphicContainer.cs" />
+    <Compile Include="GraphicFactory.cs" />
     <Compile Include="Node.cs" />
+    <Compile Include="NodeGraphic.cs" />
     <Compile Include="Representation.cs" />
+    <Compile Include="RepresentationGraphic.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

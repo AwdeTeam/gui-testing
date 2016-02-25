@@ -82,18 +82,7 @@ namespace AlgGui
 
 		// -- FUNCTIONS --
 
-		// find least amount of space to fit all nodes
-		private int calcOptimalWidth(int numIn, int numOut)
-		{
-			int totalXIn = numIn * NODE_SIZE;
-			int totalXOut = numOut * NODE_SIZE;
-
-			int widest = totalXIn;
-			if (totalXOut > widest) { widest = totalXOut; }
-
-			if (widest < 25) { widest = 25; } // make it at least 25 pixels wide
-			return widest;
-		}
+		
 
 		// initialize graphics
 		protected void createDrawing(int x, int y, int w, int h, int numIn, int numOut)

@@ -27,3 +27,13 @@ D:\Workbench\Projectum\gui-testing\VSCS\AlgGui\obj\Debug\AlgGui.csproj.GenerateR
 C:\dwl\lab\AwdeMachineLearning\gui\VSCS\AlgGui\bin\Debug\AlgGui.exe.config
 C:\dwl\lab\AwdeMachineLearning\gui\VSCS\AlgGui\obj\Debug\AlgGui.exe
 C:\dwl\lab\AwdeMachineLearning\gui\VSCS\AlgGui\obj\Debug\AlgGui.pdb
+C:\dwl\lab\AwdeMachineLearning\gui\VSCS\AlgGui\bin\Debug\AlgGui.exe
+C:\dwl\lab\AwdeMachineLearning\gui\VSCS\AlgGui\bin\Debug\AlgGui.pdb
+C:\dwl\lab\AwdeMachineLearning\gui\VSCS\AlgGui\obj\Debug\AlgGui.csprojResolveAssemblyReference.cache
+C:\dwl\lab\AwdeMachineLearning\gui\VSCS\AlgGui\obj\Debug\MainWindow.baml
+C:\dwl\lab\AwdeMachineLearning\gui\VSCS\AlgGui\obj\Debug\MainWindow.g.cs
+C:\dwl\lab\AwdeMachineLearning\gui\VSCS\AlgGui\obj\Debug\App.g.cs
+C:\dwl\lab\AwdeMachineLearning\gui\VSCS\AlgGui\obj\Debug\AlgGui_MarkupCompile.cache
+C:\dwl\lab\AwdeMachineLearning\gui\VSCS\AlgGui\obj\Debug\AlgGui.g.resources
+C:\dwl\lab\AwdeMachineLearning\gui\VSCS\AlgGui\obj\Debug\AlgGui.Properties.Resources.resources
+C:\dwl\lab\AwdeMachineLearning\gui\VSCS\AlgGui\obj\Debug\AlgGui.csproj.GenerateResource.Cache
