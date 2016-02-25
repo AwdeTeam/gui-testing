@@ -24,8 +24,6 @@ namespace AlgGui
 
 		private const int Z_LEVEL = 10;
 
-
-
 		// info variables
 		private int m_id = 0; // stored only once, never changed, passed in from representation
 		private string m_name = "Unnamed algorithm";
@@ -47,10 +45,13 @@ namespace AlgGui
 		private SolidColorBrush m_brushLightenedBase;
 		private Thickness m_noThickness = new Thickness(0);
 
+		private Representation m_parent;
+
 		// construction
 		// TODO: overloaded part, make this a function that takes a lot more, than constructors just call different ones with some default parameters instead
-		public RepresentationGraphic(int id, string name, string version, string algorithm, int numIn, int numOut)
+		public RepresentationGraphic(Representation parent, int id, string name, string version, string algorithm, int numIn, int numOut)
 		{
+			m_parent = parent;
 			m_id = id;
 			m_name = name;
 			m_version = version;

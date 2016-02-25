@@ -14,7 +14,8 @@ namespace AlgGui
 	public class NodeGraphic
 	{
 		private Ellipse m_body = new Ellipse();
-		//private Representation m_parent;
+		
+		private Node m_parent;
 
 		private SolidColorBrush m_brushFill = new SolidColorBrush(Colors.White);
 		private SolidColorBrush m_brushBorder = new SolidColorBrush(Colors.Black);
@@ -23,8 +24,9 @@ namespace AlgGui
 		private int m_offsetY = 0;
 
 		// construction
-		public NodeGraphic(int x, int y, int offX, int offY, int size, int z)
+		public NodeGraphic(Node parent, int x, int y, int offX, int offY, int size, int z)
 		{
+			m_parent = parent;
 			m_offsetX = offX;
 			m_offsetY = offY;
 
