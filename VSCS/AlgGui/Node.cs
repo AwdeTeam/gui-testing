@@ -18,12 +18,13 @@ namespace AlgGui
 		// TODO: add labels on hover (right click allows you to change?) [for naming groups?]
 
 		// member variables
-		private Ellipse m_body = new Ellipse();
+		//private Ellipse m_body = new Ellipse();
 		private Representation m_parent;
+		private NodeGraphic m_graphic;
 
 		// NOTE: offsets are from TOP LEFT CORNER OF REPRESENTATION
-		private int m_offsetX = 0; 
-		private int m_offsetY = 0;
+		//private int m_offsetX = 0; 
+		//private int m_offsetY = 0;
 
 		private List<Connection> m_connections = new List<Connection>();
 
@@ -33,15 +34,17 @@ namespace AlgGui
         public Datatype datatype = null;
         
 		// construction
-		public Node(Representation parent, int x, int y, int offX, int offY, int size, bool isInput, int groupNum) // PASS IN X AND Y OF REPRESENTATION
+		public Node(Representation parent, int offX, int offY, int size, bool isInput, int groupNum) // PASS IN X AND Y OF REPRESENTATION
 		{
 			m_parent = parent;
-			m_offsetX = offX;
-			m_offsetY = offY;
+			/*m_offsetX = offX;
+			m_offsetY = offY;*/
 			m_isInput = isInput;
 			m_groupNum = groupNum;
 
-			createDrawing(x, y, size);
+			m_graphic = GraphicFactory.createNodeGraphic(this, offX, offY, size, z);
+
+			//createDrawing(x, y, size);
 		}
 
 		// properties
@@ -51,6 +54,7 @@ namespace AlgGui
 		public Ellipse getBody() { return m_body; }
 
 		public Representation getParent() { return m_parent; }
+		public NodeGraphic getGraphic() { return m_graphic; }
 
 		public double getCurrentX() { return Canvas.GetLeft(m_body); }
 		public double getCurrentY() { return Canvas.GetTop(m_body); }

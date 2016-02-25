@@ -49,16 +49,20 @@ namespace AlgGui
 
 		// construction
 		// TODO: overloaded part, make this a function that takes a lot more, than constructors just call different ones with some default parameters instead
-		public RepresentationGraphic(Representation parent, int id, string name, string version, string algorithm, int numIn, int numOut)
+		public RepresentationGraphic(Representation parent, string name, string version, string algorithm, int numIn, int numOut)
 		{
 			m_parent = parent;
-			m_id = id;
+			m_id = parent.getID();
 			m_name = name;
 			m_version = version;
 			m_algorithm = algorithm;
 
 			createDrawing(100, 100, numIn, numOut, m_baseColor);
 		}
+
+		// -- PROPERTIES --
+		public double getCurrentX() { return Canvas.GetLeft(m_body); }
+		public double getCurrentY() { return Canvas.GetTop(m_body); }
 
 		// -- FUNCTIONS --
 
@@ -71,28 +75,28 @@ namespace AlgGui
 
 			// create body
 			m_body.Fill = m_brushBase;
-			m_body.Height = MINIMUM_HEIGHT;
+			m_body.Height = GraphicContainer.REP_MINIMUM_HEIGHT;
 			m_body.Width = width;
 			m_body.RadiusX = 5;
 			m_body.RadiusY = 5;
 			m_body.Stroke = m_brushBorder;
 			m_body.StrokeThickness = 2;
-			Canvas.SetZIndex(m_body, Z_LEVEL);
+			Canvas.SetZIndex(m_body, GraphicContainer.REP_Z_LEVEL);
 
 			// board (inner part of body)
 			m_board.Fill = m_brushLightenedBase;
-			m_board.Height = MINIMUM_HEIGHT - 30;
+			m_board.Height = GraphicContainer.REP_MINIMUM_HEIGHT - 30;
 			m_board.Width = width - 12;
 			m_board.RadiusX = 3;
 			m_board.RadiusY = 3;
-			Canvas.SetZIndex(m_board, Z_LEVEL);
+			Canvas.SetZIndex(m_board, GraphicContainer.REP_Z_LEVEL);
 
 			// labels
 			m_lblID.Margin = m_noThickness;
 			m_lblID.Content = m_id + " " + m_version;
 			m_lblID.Foreground = m_brushForeground;
 			m_lblID.IsHitTestVisible = false;
-			Canvas.SetZIndex(m_lblID, Z_LEVEL);
+			Canvas.SetZIndex(m_lblID, GraphicContainer.REP_Z_LEVEL);
 
 			m_lblName.Margin = m_noThickness;
 			m_lblName.Content = m_name;
@@ -100,13 +104,13 @@ namespace AlgGui
 			m_lblName.Padding = m_noThickness;
 			m_lblName.Margin = m_noThickness;
 			m_lblName.Height = 20;
-			Canvas.SetZIndex(m_lblName, Z_LEVEL);
+			Canvas.SetZIndex(m_lblName, GraphicContainer.REP_Z_LEVEL);
 
 			m_lblContent.Foreground = m_brushForeground;
 			m_lblContent.Content = m_algorithm + "\n" + "Accuracy stuff blah blah blah blah";
 			m_lblContent.IsHitTestVisible = false;
 			m_lblContent.Width = m_board.Width;
-			Canvas.SetZIndex(m_lblContent, Z_LEVEL);
+			Canvas.SetZIndex(m_lblContent, GraphicContainer.REP_Z_LEVEL);
 
 			moveAbsolute(x, y);
 
@@ -127,8 +131,8 @@ namespace AlgGui
 			Canvas.SetLeft(m_body, x);
 			Canvas.SetTop(m_body, y);
 
-			Canvas.SetLeft(m_board, x + PADDING_LEFT);
-			Canvas.SetTop(m_board, y + PADDING_TOP);
+			Canvas.SetLeft(m_board, x + GraphicContainer.REP_BOARD_PADDING_LEFT);
+			Canvas.SetTop(m_board, y + GraphicContainer.REP_BOARD_PADDING_TOP);
 
 			Canvas.SetLeft(m_lblID, x);
 			Canvas.SetTop(m_lblID, y);
@@ -136,8 +140,8 @@ namespace AlgGui
 			Canvas.SetLeft(m_lblName, x + m_body.Width + 2);
 			Canvas.SetTop(m_lblName, x + (m_body.Height / 2) - (m_lblName.Height / 2));
 
-			Canvas.SetLeft(m_lblContent, x + PADDING_LEFT);
-			Canvas.SetTop(m_lblContent, y + PADDING_TOP);
+			Canvas.SetLeft(m_lblContent, x + GraphicContainer.REP_BOARD_PADDING_LEFT);
+			Canvas.SetTop(m_lblContent, y + GraphicContainer.REP_BOARD_PADDING_TOP);
 		}
 
 		// find least amount of space to fit all nodes

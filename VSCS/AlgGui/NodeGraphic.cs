@@ -24,17 +24,17 @@ namespace AlgGui
 		private int m_offsetY = 0;
 
 		// construction
-		public NodeGraphic(Node parent, int x, int y, int offX, int offY, int size, int z)
+		public NodeGraphic(Node parent, int offX, int offY, int size, int z)
 		{
 			m_parent = parent;
 			m_offsetX = offX;
 			m_offsetY = offY;
 
-			createDrawing(x, y, size, z);
+			createDrawing(size, z);
 		}
 
 		// -- FUNCTIONS --
-		private void createDrawing(int x, int y, int size, int z)
+		private void createDrawing(int size, int z)
 		{
 			// create body
 			m_body.Fill = m_brushFill;
@@ -44,7 +44,7 @@ namespace AlgGui
 			m_body.Width = size;
 			Canvas.SetZIndex(m_body, z);
 
-			move(x, y);
+			move(m_parent.getParent().getGraphic().getCurrentX(), m_parent.getParent().getGraphic().getCurrentY());
 
 			// add to canvas
 			Master.getCanvas().Children.Add(m_body);

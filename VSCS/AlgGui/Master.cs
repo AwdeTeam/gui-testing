@@ -24,6 +24,7 @@ namespace AlgGui
 		public static void log(string message) { win.log(message); }
 		public static void log(string message, Color color) { win.log(message, color); }
 
+		public static GraphicContainer getGraphicContainer() { return win.getGraphicContainer(); }
 		public static Canvas getCanvas() { return win.getMainCanvas(); } // I know the name for this now!! Delegation!
 		public static void setDragging(bool dragging, Representation dragRep) { win.setDragging(dragging, dragRep); }
 		public static void setDraggingConnection(bool dragging, Connection con) { win.setDraggingConnection(dragging, con); }

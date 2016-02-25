@@ -40,6 +40,8 @@ namespace AlgGui
 		// hashmap is probably unnecessary, but I actually understand how they work now, so yeah ^_^
 		private Dictionary<int, Representation> m_representations = new Dictionary<int, Representation>();
 
+		private GraphicContainer m_gc = new GraphicContainer();
+
 		// log channel (not implemented yet)
 		const int NORMAL = 0;
 		const int DEBUG = 1;
@@ -73,6 +75,7 @@ namespace AlgGui
 
 		// properties
 		public Canvas getMainCanvas() { return world; }
+		public GraphicContainer getGraphicContainer() { return m_gc; }
 		public void setDragging(bool dragging, Representation dragRep) 
 		{ 
 			m_isDragging = dragging; m_draggingRep = dragRep;

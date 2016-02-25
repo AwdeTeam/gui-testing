@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace AlgGui
 {
-	class ConnectionGraphic
+	public class ConnectionGraphic
 	{
 		private const int Z_LEVEL = 9;
 

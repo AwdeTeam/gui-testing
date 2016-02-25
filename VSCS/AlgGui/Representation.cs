@@ -15,29 +15,29 @@ namespace AlgGui
 	{
         public enum AlgorithmFamily { Classifier, Clustering, DimensionReduction, Operation };
 
-		protected const int NODE_SIZE = 10;
+//		public static const int NODE_SIZE = 10; 
 
 		// member variables
 		protected int m_id = 0;
-		protected Rectangle m_body = new Rectangle();
-        protected Rectangle m_board = new Rectangle();
+		/*protected Rectangle m_body = new Rectangle();
+        protected Rectangle m_board = new Rectangle();*/
         protected List<Node> m_nodes = new List<Node>();
 
-        protected int m_leftPadding = 6;
+        /*protected int m_leftPadding = 6;
         protected int m_topPadding = 24;
 
 		protected bool m_isBodyClicked = false;
         protected bool m_hasFocus = false;
 		protected double m_bodyRelativeX = 0; // relative coordinates from body to where mouse clicked
-        protected double m_bodyRelativeY = 0;
+        protected double m_bodyRelativeY = 0;*/
 
         protected Datatype[] inputs;
         protected Datatype[] outputs;
 
         //Information Variables
-        public Label m_lblName = new Label();
+        /*public Label m_lblName = new Label();
         public Label m_lblID = new Label();
-        public TextBox m_txtContent = new TextBox();
+        public TextBox m_txtContent = new TextBox();*/
 
         public String m_name = "unnamed algorithm";
         public String m_version = "##.## XXX";
@@ -46,14 +46,16 @@ namespace AlgGui
 
         public Color m_baseColor = Colors.SeaGreen;
 
+		private RepresentationGraphic m_graphic;
+
 		// construction
 		public Representation(int numIn, int numOut)
 		{
-			Master.log("----Creating representation----");
+			/*Master.log("----Creating representation----");
 			m_id = Master.getNextRepID();
 			Master.log("ID: " + m_id, Colors.GreenYellow);
 			int width = calcOptimalWidth(numIn, numOut) + 60;
-			createDrawing(100, 100, width, 80, numIn, numOut);
+			createDrawing(100, 100, width, 80, numIn, numOut);*/
 		}
 
         public Representation(Datatype[] inputs, Datatype[] outputs)
@@ -61,17 +63,19 @@ namespace AlgGui
             Master.log("----Creating representation----");
             m_id = Master.getNextRepID();
             Master.log("ID: " + m_id, Colors.GreenYellow);
-            int width = calcOptimalWidth(inputs.Length, outputs.Length) + 60;
+            //int width = calcOptimalWidth(inputs.Length, outputs.Length) + 60;
             this.inputs = inputs;
             this.outputs = outputs;
-            createDrawing(100, 100, width, 80, inputs.Length, outputs.Length);
+            //createDrawing(100, 100, width, 80, inputs.Length, outputs.Length);
+			m_graphic = GraphicFactory.createRepresentationGraphic(this);
         }
 
 		// properties
 		public void setLabelText(string text) { m_lblName.Content = text; }
 		public int getID() { return m_id; }
-		public Rectangle getBody() { return m_body; }
+		//public Rectangle getBody() { return m_body; }
         //public Rectangle getOutline() { return m_outline; }
+		public RepresentationGraphic getGraphic() { return m_graphic; }
 		public double getCurrentX() { return Canvas.GetLeft(m_body); }
 		public double getCurrentY() { return Canvas.GetTop(m_body); }
 		public double getRelativeX() { return m_bodyRelativeX; } // should only be necessary for middle clicking
@@ -85,7 +89,7 @@ namespace AlgGui
 		
 
 		// initialize graphics
-		/*protected void createDrawing(int x, int y, int w, int h, int numIn, int numOut)
+		protected void createDrawing(int x, int y, int w, int h, int numIn, int numOut)
 		{
             // create body
             m_body.Fill = new SolidColorBrush(m_baseColor);
@@ -275,6 +279,6 @@ namespace AlgGui
             float green = (255 - color.G) * p + color.G;
             float blue = (255 - color.B) * p + color.B;
             return Color.FromArgb(color.A, (byte)red, (byte)green, (byte)blue);
-        }*/
+        }
 	}
 }
