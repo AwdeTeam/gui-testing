@@ -85,7 +85,7 @@ namespace AlgGui
 		
 
 		// initialize graphics
-		protected void createDrawing(int x, int y, int w, int h, int numIn, int numOut)
+		/*protected void createDrawing(int x, int y, int w, int h, int numIn, int numOut)
 		{
             // create body
             m_body.Fill = new SolidColorBrush(m_baseColor);
@@ -275,6 +275,6 @@ namespace AlgGui
             float green = (255 - color.G) * p + color.G;
             float blue = (255 - color.B) * p + color.B;
             return Color.FromArgb(color.A, (byte)red, (byte)green, (byte)blue);
-        }
+        }*/
 	}
 }
