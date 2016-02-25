@@ -11,7 +11,7 @@ using System.Windows;
 
 namespace AlgGui
 {
-	class RepresentationGraphic
+	public class RepresentationGraphic
 	{
 		// constants
 		private const int NODE_SIZE = 10;
