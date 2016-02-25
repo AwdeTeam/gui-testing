@@ -24,3 +24,6 @@ D:\Workbench\Projectum\gui-testing\VSCS\AlgGui\obj\Debug\AlgGui_MarkupCompile.ca
 D:\Workbench\Projectum\gui-testing\VSCS\AlgGui\obj\Debug\AlgGui.g.resources
 D:\Workbench\Projectum\gui-testing\VSCS\AlgGui\obj\Debug\AlgGui.Properties.Resources.resources
 D:\Workbench\Projectum\gui-testing\VSCS\AlgGui\obj\Debug\AlgGui.csproj.GenerateResource.Cache
+C:\dwl\lab\AwdeMachineLearning\gui\VSCS\AlgGui\bin\Debug\AlgGui.exe.config
+C:\dwl\lab\AwdeMachineLearning\gui\VSCS\AlgGui\obj\Debug\AlgGui.exe
+C:\dwl\lab\AwdeMachineLearning\gui\VSCS\AlgGui\obj\Debug\AlgGui.pdb
