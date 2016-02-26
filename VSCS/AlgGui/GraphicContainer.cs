@@ -10,7 +10,7 @@ using System.Windows.Shapes;
 
 namespace AlgGui
 {
-	class GraphicContainer
+	public class GraphicContainer
 	{
 		/*private bool m_isDraggingRepresentation;
 		private RepresentationGraphic m_draggingRepresentation;*/
@@ -20,41 +20,75 @@ namespace AlgGui
 		// ONLY GOAL OF EVENT HANDLERS HERE ARE TO CALL/ROUTE THE APPROPRIATE EVENT HANDLERS ON COMPONENTS (unless global thing like panning)
 
 		// graphical data constants
-		public static const int NODE_SIZE = 10;
+		// NOTE: apparently const implicitly make these "static"
+		public const int NODE_SIZE = 10;
 
-		public static const int REP_MINIMUM_WIDTH = 85;
-		public static const int REP_MINIMUM_HEIGHT = 80;
-		public static const int REP_BOARD_PADDING_TOP = 24;
-		public static const int REP_BOARD_PADDING_LEFT = 6;
+		public const int REP_MINIMUM_WIDTH = 85;
+		public const int REP_MINIMUM_HEIGHT = 80;
+		public const int REP_BOARD_PADDING_TOP = 24;
+		public const int REP_BOARD_PADDING_LEFT = 6;
 
-		public static const int REP_Z_LEVEL = 10;
-		public static const int NODE_Z_LEVEL = 10;
-		public static const int CONNECTION_Z_LEVEL = 9;
+		public const int REP_Z_LEVEL = 10;
+		public const int NODE_Z_LEVEL = 10;
+		public const int CONNECTION_Z_LEVEL = 9;
 
+		// member variables
+		private bool m_isDraggingScreen = false;
+		private bool m_isDraggingConnection = false;
+		private bool m_isDraggingRepresentation = false;
 
+		private Representation m_draggingRepresentation;
+		private Connection m_draggingConnection;
 
-		public GraphicContainer()
-		{
+		private Dictionary<int, RepresentationGraphic> m_repGraphics = new Dictionary<int, RepresentationGraphic>();
 
-		}
+		public GraphicContainer() { }
 
-
-
+		// PROPERTIES
+		public RepresentationGraphic getRepresentationGraphic(int id) { return m_repGraphics[id]; }
+		public void addRepresentationGraphic(RepresentationGraphic rg) { m_repGraphics.Add(rg.getParent().getID(), rg); }
 
 		// EVENT HANDLERS
 		public void evt_MouseMove(object sender, MouseEventArgs e)
 		{
-
+			//Master.log("MOUSE MOVED!");
+			if (m_isDraggingScreen)
+			{
+				foreach (RepresentationGraphic rg in m_repGraphics.Values)
+				{
+					Point p = e.GetPosition(Master.getCanvas());
+					double x = p.X - rg.getRelativeX();
+					double y = p.Y - rg.getRelativeY();
+					rg.move(x, y);
+				}
+			}
 		}
 
 		public void evt_MouseDown(object sender, MouseButtonEventArgs e)
 		{
-
+			if (e.MiddleButton == MouseButtonState.Pressed)
+			{
+				m_isDraggingScreen = true;
+				foreach (RepresentationGraphic rg in m_repGraphics.Values)
+				{
+					Point p = e.GetPosition(Master.getCanvas());
+					rg.setRelativeX(p.X - rg.getCurrentX());
+					rg.setRelativeY(p.Y - rg.getCurrentY());
+				}
+			}
 		}
 
 		public void evt_MouseUp(object sender, MouseButtonEventArgs e)
 		{
-
+			if (m_isDraggingScreen)
+			{
+				m_isDraggingScreen = false;
+				foreach (RepresentationGraphic rg in m_repGraphics.Values)
+				{
+					rg.setRelativeX(0);
+					rg.setRelativeY(0);
+				}
+			}
 		}
 	}
 }

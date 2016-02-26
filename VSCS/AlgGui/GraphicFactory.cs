@@ -8,26 +8,23 @@ namespace AlgGui
 {
 	public class GraphicFactory
 	{
-		public static RepresentationGraphic createRepresentationGraphic(Representation parent, string name, string version, string algorithm, int numIn, int numOut)
-		{
-			return new RepresentationGraphic(parent, name, version, algorithm, numIn, numOut);
-		}
-
 		public static RepresentationGraphic createRepresentationGraphic(Representation parent, int numIn, int numOut)
 		{
-			return new RepresentationGraphic(parent, "Unnamed algorithm", "##.## XXX", "No-Op", numIn, numOut);
+			RepresentationGraphic rg = new RepresentationGraphic(parent, numIn, numOut);
+			Master.getGraphicContainer().addRepresentationGraphic(rg);
+			return rg;
 		}
 
 		public static RepresentationGraphic createRepresentationGraphic(Representation parent)
 		{
-			return new RepresentationGraphic(parent, "Unnamed algorithm", "##.## XXX", "No-Op", 1, 1);
+			RepresentationGraphic rg = new RepresentationGraphic(parent, 1, 1);
+			Master.getGraphicContainer().addRepresentationGraphic(rg);
+			return rg;
 		}
 	
-		public static NodeGraphic createNodeGraphic(Node parent, int offX, int offY, int size, int z)
+		public static NodeGraphic createNodeGraphic(Node parent)
 		{
-			return new NodeGraphic(parent, offX, offY, size, z);
+			return new NodeGraphic(parent);
 		}
-	
-	
 	}
 }

@@ -13,23 +13,17 @@ namespace AlgGui
 {
 	public class RepresentationGraphic
 	{
-		// constants
-		private const int NODE_SIZE = 10;
-
-		private const int MINIMUM_WIDTH = 85;
-		private const int MINIMUM_HEIGHT = 80;
-
-		private const int PADDING_TOP = 24;
-		private const int PADDING_LEFT = 6;
-
-		private const int Z_LEVEL = 10;
-
 		// info variables
-		private int m_id = 0; // stored only once, never changed, passed in from representation
-		private string m_name = "Unnamed algorithm";
-		private string m_version = "##.## XXX";
-		private string m_algorithm = "No-Op"; //TODO: merge with python algorithm
-		
+		private int m_id;
+		private string m_name;
+		private string m_version;
+		private string m_algorithm; //TODO: merge with python algorithm
+
+		private int m_inOffStartPoint = 0;
+		private int m_outOffStartPoint = 0;
+
+		private double m_relativeX = 0; // used for panning
+		private double m_relativeY = 0;
 		
 		// gui elements
 		private Rectangle m_body = new Rectangle();
@@ -40,31 +34,57 @@ namespace AlgGui
 		private Label m_lblContent = new Label();
 		private Color m_baseColor = Colors.SeaGreen;
 		private SolidColorBrush m_brushBorder = new SolidColorBrush(Colors.Black); // prob better way to do this?
-		private SolidColorBrush m_brushForeground;
+		private SolidColorBrush m_brushForeground = new SolidColorBrush(Colors.Black);
 		private SolidColorBrush m_brushBase;
 		private SolidColorBrush m_brushLightenedBase;
 		private Thickness m_noThickness = new Thickness(0);
 
 		private Representation m_parent;
 
+		private bool m_isDragging = false;
+
 		// construction
 		// TODO: overloaded part, make this a function that takes a lot more, than constructors just call different ones with some default parameters instead
-		public RepresentationGraphic(Representation parent, string name, string version, string algorithm, int numIn, int numOut)
+		public RepresentationGraphic(Representation parent, int numIn, int numOut)
 		{
 			m_parent = parent;
+
 			m_id = parent.getID();
-			m_name = name;
-			m_version = version;
-			m_algorithm = algorithm;
+			m_name = parent.getName();
+			m_version = parent.getVersion();
+			m_algorithm = parent.getAlgorithm();
 
 			createDrawing(100, 100, numIn, numOut, m_baseColor);
+
+			// get starting offset points for nodes
+			m_inOffStartPoint = (int)((m_body.Width - (numIn * GraphicContainer.NODE_SIZE)) / 2);
+			m_outOffStartPoint = (int)((m_body.Width - (numOut * GraphicContainer.NODE_SIZE)) / 2);
 		}
 
 		// -- PROPERTIES --
 		public double getCurrentX() { return Canvas.GetLeft(m_body); }
 		public double getCurrentY() { return Canvas.GetTop(m_body); }
+		public void setDragging(bool dragging) { m_isDragging = dragging; }
+
+		public double getRelativeX() { return m_relativeX; }
+		public double getRelativeY() { return m_relativeY; }
+		public void setRelativeX(double x) { m_relativeX = x; }
+		public void setRelativeY(double y) { m_relativeY = y; }
+		public Representation getParent() { return m_parent; }
 
 		// -- FUNCTIONS --
+
+		// finds what offset should be for given node
+		public int getNodeOffsetX(bool isInput, int groupNum)
+		{
+			if (isInput) { return m_inOffStartPoint + groupNum * GraphicContainer.NODE_SIZE; }
+			else { return m_outOffStartPoint + groupNum * GraphicContainer.NODE_SIZE; }
+		}
+		public int getNodeOffsetY(bool isInput)
+		{
+			if (isInput) { return -(GraphicContainer.NODE_SIZE); }
+			else { return (int)m_body.Height; }
+		}
 
 		private void createDrawing(int x, int y, int numIn, int numOut, Color initialColor)
 		{
@@ -112,7 +132,7 @@ namespace AlgGui
 			m_lblContent.Width = m_board.Width;
 			Canvas.SetZIndex(m_lblContent, GraphicContainer.REP_Z_LEVEL);
 
-			moveAbsolute(x, y);
+			move(x, y);
 
 			// TODO: mousedown events will be handled in here?
 
@@ -123,10 +143,13 @@ namespace AlgGui
 			cnvs.Children.Add(m_lblID);
 			cnvs.Children.Add(m_lblContent);
 			cnvs.Children.Add(m_lblName);
+
+			m_body.MouseDown += new MouseButtonEventHandler(evt_MouseDown);
+			m_lblName.MouseDown += new MouseButtonEventHandler(name_MouseDown);
 		}
 
 		// moves entire representation to passed x and y (based on upper left corner)
-		private void moveAbsolute(int x, int y) // public?
+		public void move(double x, double y) 
 		{
 			Canvas.SetLeft(m_body, x);
 			Canvas.SetTop(m_body, y);
@@ -138,22 +161,25 @@ namespace AlgGui
 			Canvas.SetTop(m_lblID, y);
 
 			Canvas.SetLeft(m_lblName, x + m_body.Width + 2);
-			Canvas.SetTop(m_lblName, x + (m_body.Height / 2) - (m_lblName.Height / 2));
+			Canvas.SetTop(m_lblName, y + (m_body.Height / 2) - (m_lblName.Height / 2));
 
 			Canvas.SetLeft(m_lblContent, x + GraphicContainer.REP_BOARD_PADDING_LEFT);
 			Canvas.SetTop(m_lblContent, y + GraphicContainer.REP_BOARD_PADDING_TOP);
+
+			// move nodes
+			foreach (Node n in m_parent.getNodes()) { n.getGraphic().move(x, y); }
 		}
 
 		// find least amount of space to fit all nodes
 		private int calcOptimalWidth(int numIn, int numOut)
 		{
-			int totalXIn = numIn * NODE_SIZE;
-			int totalXOut = numOut * NODE_SIZE;
+			int totalXIn = numIn * GraphicContainer.NODE_SIZE;
+			int totalXOut = numOut * GraphicContainer.NODE_SIZE;
 
 			int widest = totalXIn;
 			if (totalXOut > widest) { widest = totalXOut; }
 
-			if (widest < MINIMUM_WIDTH) { widest = MINIMUM_WIDTH; } // make it at least 25 pixels wide
+			if (widest < GraphicContainer.REP_MINIMUM_WIDTH) { widest = GraphicContainer.REP_MINIMUM_WIDTH; } // make it at least 25 pixels wide
 			return widest;
 		}
 
@@ -174,6 +200,25 @@ namespace AlgGui
 		}
 
 		// -- EVENT HANDLERS --
-		// (if starts with evt, second hand, being called indirectly from container)
+
+		public void evt_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+
+		}
+
+		public void evt_MouseMove(object sender, MouseEventArgs e)
+		{
+
+		}
+
+		public void evt_MouseUp(object sender, MouseEventArgs e)
+		{
+
+		}
+
+		public void name_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			Master.setCommandPrompt("edit rep -" + m_id + " -lbl -\"");
+		}
 	}
 }

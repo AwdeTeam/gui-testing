@@ -128,7 +128,7 @@ namespace AlgGui
 		private void world_MouseMove(object sender, MouseEventArgs e)
 		{
 			// if mouse has left the box it's dragging, manually call its event
-			if (m_isDragging) { m_draggingRep.body_MouseMove(sender, e); }
+			/*if (m_isDragging) { m_draggingRep.body_MouseMove(sender, e); }
 			if (m_isDraggingScreen)
 			{
 				// if panning screen, move ALL things
@@ -147,33 +147,35 @@ namespace AlgGui
 				int y = (int)p.Y;
 				//log("mouse point: " + x + " " + y, Colors.PaleTurquoise); // DEBUG
 				m_draggingCon.adjustSecondPoint(x, y);
-			}
+			}*/
+			m_gc.evt_MouseMove(sender, e);
 		}
 
 		// technically window instead of world as well (canvases don't handle events properly....)
 		private void world_MouseDown(object sender, MouseButtonEventArgs e)
 		{
-			if (e.MiddleButton == MouseButtonState.Pressed)
+			/*if (e.MiddleButton == MouseButtonState.Pressed)
 			{
 				m_isDraggingScreen = true;
 				foreach (Representation r in m_representations.Values)
 				{
 					Point p = e.GetPosition(world);
-					r.setRelativeX(p.X - r.getCurrentX());
-					r.setRelativeY(p.Y - r.getCurrentY());
+					//r.setRelativeX(p.X - r.getCurrentX());
+					//r.setRelativeY(p.Y - r.getCurrentY());
 				}
-			}
+			}*/
+			m_gc.evt_MouseDown(sender, e);
 		}
 
 		private void world_MouseUp(object sender, MouseButtonEventArgs e)
 		{
-			if (m_isDraggingScreen)
+			/*if (m_isDraggingScreen)
 			{
 				m_isDraggingScreen = false;
 				foreach (Representation r in m_representations.Values)
 				{
-					r.setRelativeX(0);
-					r.setRelativeY(0);
+					//r.setRelativeX(0);
+					//r.setRelativeY(0);
 				}
 			}
 			if (m_isDraggingConnection)
@@ -181,7 +183,8 @@ namespace AlgGui
 				if (m_draggingCon != null && !m_draggingCon.isComplete()) { world.Children.Remove(m_draggingCon.getBody()); }
 				m_draggingCon = null;
 				m_isDraggingConnection = false;
-			}
+			}*/
+			m_gc.evt_MouseUp(sender, e);
 		}
 
 
@@ -368,7 +371,7 @@ namespace AlgGui
 
 					if (attr == "lbl") 
 					{ 
-						r.setLabelText(val);
+						//r.setLabelText(val);
 						log("Updated representation label to '" + val + "'");
 					}
 					else if (attr == "color") 

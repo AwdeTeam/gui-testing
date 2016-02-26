@@ -39,7 +39,7 @@ namespace AlgGui
                 }
             }
 			else { m_outNode = start; }
-			createDrawing();
+			//createDrawing();
 		}
 
 		// properties
@@ -64,7 +64,7 @@ namespace AlgGui
 			else { m_inNode = other; }
 
 			// make sure the nodes aren't the same and are not both inputs or outputs
-			if (m_origin.Equals(m_end) || m_origin.isInput() == m_end.isInput() || 
+			/*if (m_origin.Equals(m_end) || m_origin.isInput() == m_end.isInput() || 
                 m_origin.getParent() == m_end.getParent() || 
                 !m_origin.datatype.fits(m_end.datatype))
 			{
@@ -77,10 +77,10 @@ namespace AlgGui
             {
                 m_color = Colors.Orange;
                 m_body.Stroke = new SolidColorBrush(m_color);
-            }
+            }*/
 
 			// set end point to end node center
-			adjustSecondPoint((int)(m_end.getCurrentX() + m_end.getBody().Width / 2), (int)(m_end.getCurrentY() + m_end.getBody().Height / 2));
+			//adjustSecondPoint((int)(m_end.getCurrentX() + m_end.getBody().Width / 2), (int)(m_end.getCurrentY() + m_end.getBody().Height / 2));
 			m_completed = true;
             Master.getCanvas().Children.Remove(m_typename);
 
@@ -97,8 +97,8 @@ namespace AlgGui
 		// moves the end of the line attached to passed node
 		public void adjustRelatedPoint(Node node)
 		{
-			if (node.Equals(m_origin)) { adjustFirstPoint((int)(m_origin.getCurrentX() + m_origin.getBody().Width / 2), (int)(m_origin.getCurrentY() + m_origin.getBody().Height / 2)); }
-			else if (node.Equals(m_end)) { adjustSecondPoint((int)(m_end.getCurrentX() + m_end.getBody().Width / 2), (int)(m_end.getCurrentY() + m_end.getBody().Height / 2)); }
+			//if (node.Equals(m_origin)) { adjustFirstPoint((int)(m_origin.getCurrentX() + m_origin.getBody().Width / 2), (int)(m_origin.getCurrentY() + m_origin.getBody().Height / 2)); }
+			//else if (node.Equals(m_end)) { adjustSecondPoint((int)(m_end.getCurrentX() + m_end.getBody().Width / 2), (int)(m_end.getCurrentY() + m_end.getBody().Height / 2)); }
 		}
 
 		// adjusts "origin" connected point
@@ -121,7 +121,7 @@ namespace AlgGui
 		}
 
 		// initialize graphics
-		private void createDrawing()
+		/*private void createDrawing()
 		{
             m_body.Stroke = new SolidColorBrush(m_color);
 			m_body.StrokeThickness = 2;
@@ -146,7 +146,7 @@ namespace AlgGui
 			// attach event handlers
 			m_body.MouseDown += new MouseButtonEventHandler(body_mouseDown);
 			m_body.MouseMove += new MouseEventHandler(body_mouseDown);
-		}
+		}*/
 
 
 		// -- EVENT HANDLERS --

@@ -35,10 +35,10 @@ namespace AlgGui
 			m_body.Stroke = m_brushStroke;
 			m_body.StrokeThickness = 2;
 			Node origin = m_parent.getOrigin();
-			m_body.X1 = origin.getCurrentX() + origin.getBody().Width / 2;
+			/*m_body.X1 = origin.getCurrentX() + origin.getBody().Width / 2;
 			m_body.Y1 = origin.getCurrentY() + origin.getBody().Height / 2;
 			m_body.X2 = origin.getCurrentX();
-			m_body.Y2 = origin.getCurrentY();
+			m_body.Y2 = origin.getCurrentY();*/
 			m_body.IsHitTestVisible = false; // make click-throughable
 			Canvas.SetZIndex(m_body, Z_LEVEL);
 		}

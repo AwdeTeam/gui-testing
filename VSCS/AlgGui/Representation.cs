@@ -31,8 +31,8 @@ namespace AlgGui
 		protected double m_bodyRelativeX = 0; // relative coordinates from body to where mouse clicked
         protected double m_bodyRelativeY = 0;*/
 
-        protected Datatype[] inputs;
-        protected Datatype[] outputs;
+        private Datatype[] m_inputs;
+        private Datatype[] m_outputs;
 
         //Information Variables
         /*public Label m_lblName = new Label();
@@ -63,25 +63,34 @@ namespace AlgGui
             Master.log("----Creating representation----");
             m_id = Master.getNextRepID();
             Master.log("ID: " + m_id, Colors.GreenYellow);
-            //int width = calcOptimalWidth(inputs.Length, outputs.Length) + 60;
-            this.inputs = inputs;
-            this.outputs = outputs;
-            //createDrawing(100, 100, width, 80, inputs.Length, outputs.Length);
+          
+            this.m_inputs = inputs;
+            this.m_outputs = outputs;
+          
 			m_graphic = GraphicFactory.createRepresentationGraphic(this);
+
+			// create nodes
+			for (int i = 0; i < m_inputs.Length; i++) { m_nodes.Add(new Node(this, true, i, m_inputs[i])); }
+			for (int i = 0; i < m_outputs.Length; i++) { m_nodes.Add(new Node(this, false, i, m_outputs[i])); }
         }
 
 		// properties
-		public void setLabelText(string text) { m_lblName.Content = text; }
+		//public void setLabelText(string text) { m_lblName.Content = text; }
 		public int getID() { return m_id; }
+		public string getName() { return m_name; }
+		public string getVersion() { return m_version; }
+		public string getAlgorithm() { return m_algorithm; }
+
 		//public Rectangle getBody() { return m_body; }
         //public Rectangle getOutline() { return m_outline; }
 		public RepresentationGraphic getGraphic() { return m_graphic; }
-		public double getCurrentX() { return Canvas.GetLeft(m_body); }
-		public double getCurrentY() { return Canvas.GetTop(m_body); }
-		public double getRelativeX() { return m_bodyRelativeX; } // should only be necessary for middle clicking
-		public double getRelativeY() { return m_bodyRelativeY; }
-		public void setRelativeX(double x) { m_bodyRelativeX = x; }
-		public void setRelativeY(double y) { m_bodyRelativeY = y; }
+		public List<Node> getNodes() { return m_nodes; }
+		//public double getCurrentX() { return Canvas.GetLeft(m_body); }
+		//public double getCurrentY() { return Canvas.GetTop(m_body); }
+		//public double getRelativeX() { return m_bodyRelativeX; } // should only be necessary for middle clicking
+		//public double getRelativeY() { return m_bodyRelativeY; }
+		//public void setRelativeX(double x) { m_bodyRelativeX = x; }
+		//public void setRelativeY(double y) { m_bodyRelativeY = y; }
 
 
 		// -- FUNCTIONS --
@@ -89,7 +98,7 @@ namespace AlgGui
 		
 
 		// initialize graphics
-		protected void createDrawing(int x, int y, int w, int h, int numIn, int numOut)
+		/*protected void createDrawing(int x, int y, int w, int h, int numIn, int numOut)
 		{
             // create body
             m_body.Fill = new SolidColorBrush(m_baseColor);
@@ -187,11 +196,11 @@ namespace AlgGui
 
             // label event handlers
             m_lblName.MouseDown += new MouseButtonEventHandler(label_MouseDown);
-		}
+		}*/
 
 		// this moves the representation...self documentation ftw
 		// NOTE: leave this public, can later be accessed from command line? (for command scripts)
-		public virtual void move(double x, double y)
+		/*public virtual void move(double x, double y)
 		{
             // move body
             Canvas.SetLeft(m_body, x);
@@ -279,6 +288,6 @@ namespace AlgGui
             float green = (255 - color.G) * p + color.G;
             float blue = (255 - color.B) * p + color.B;
             return Color.FromArgb(color.A, (byte)red, (byte)green, (byte)blue);
-        }
+        }*/
 	}
 }
