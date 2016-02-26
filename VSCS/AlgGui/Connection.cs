@@ -165,14 +165,14 @@ namespace AlgGui
             if (e.RightButton == MouseButtonState.Pressed) { removeConnection();  }
 		}
 
+		// connection must already have been created
         public void removeConnection()
         {
             // remove all the things! (effectively delete connection)
             m_origin.removeConnection(this);
             m_end.removeConnection(this);
+			m_graphic.removeGraphic();
 
-            //Master.getCanvas().Children.Remove(m_body);
-            //Master.getCanvas().Children.Remove(m_typename);
             Master.log("Connection destroyed");
         }
 	}

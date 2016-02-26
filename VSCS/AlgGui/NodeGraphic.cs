@@ -64,7 +64,8 @@ namespace AlgGui
 		{
 			Canvas.SetLeft(m_body, x + m_offsetX);
 			Canvas.SetTop(m_body, y + m_offsetY);
-			// CONNECTION STUFF?
+			
+			// update all connections
 			foreach (Connection c in m_parent.getConnections()) { c.getGraphic().adjustRelatedPoint(m_parent); }
 		}
 

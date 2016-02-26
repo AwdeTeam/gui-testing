@@ -67,7 +67,7 @@ namespace AlgGui
             this.m_inputs = inputs;
             this.m_outputs = outputs;
           
-			m_graphic = GraphicFactory.createRepresentationGraphic(this);
+			m_graphic = GraphicFactory.createRepresentationGraphic(this, inputs.Length, outputs.Length);
 
 			// create nodes
 			for (int i = 0; i < m_inputs.Length; i++) { m_nodes.Add(new Node(this, true, i, m_inputs[i])); }
@@ -78,6 +78,7 @@ namespace AlgGui
 		//public void setLabelText(string text) { m_lblName.Content = text; }
 		public int getID() { return m_id; }
 		public string getName() { return m_name; }
+		public void setName(string name) { m_name = name; m_graphic.setName(m_name); }
 		public string getVersion() { return m_version; }
 		public string getAlgorithm() { return m_algorithm; }
 

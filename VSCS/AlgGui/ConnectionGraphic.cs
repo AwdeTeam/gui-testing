@@ -64,6 +64,9 @@ namespace AlgGui
 
 			Master.setDraggingConnection(true, this);
 			m_isDragging = true;
+
+			m_body.MouseDown += new MouseButtonEventHandler(evt_MouseDown);
+			m_body.MouseMove += new MouseEventHandler(evt_MouseDown);
 		}
 
 		// visually attaches connection to passed node
@@ -120,6 +123,11 @@ namespace AlgGui
 				int y = (int)p.Y;
 				adjustSecondPoint(x, y);
 			}
+		}
+
+		public void evt_MouseDown(object sender, MouseEventArgs e)
+		{
+			if (e.RightButton == MouseButtonState.Pressed) { m_parent.removeConnection(); }
 		}
 	}
 }

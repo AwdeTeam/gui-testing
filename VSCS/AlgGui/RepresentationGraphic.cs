@@ -73,6 +73,15 @@ namespace AlgGui
 		public void setRelativeY(double y) { m_relativeY = y; }
 		public Representation getParent() { return m_parent; }
 
+		public void setBaseColor(Color color) 
+		{ 
+			m_baseColor = color;
+			setBrushes();
+			applyBrushes();
+		}
+
+		public void setName(string name) { m_name = name; m_lblName.Content = m_name; }
+
 		// -- FUNCTIONS --
 
 		// finds what offset should be for given node
@@ -93,9 +102,9 @@ namespace AlgGui
 
 			m_baseColor = initialColor;
 			setBrushes();
+			applyBrushes();
 
 			// create body
-			m_body.Fill = m_brushBase;
 			m_body.Height = GraphicContainer.REP_MINIMUM_HEIGHT;
 			m_body.Width = width;
 			m_body.RadiusX = 5;
@@ -105,7 +114,6 @@ namespace AlgGui
 			Canvas.SetZIndex(m_body, GraphicContainer.REP_Z_LEVEL);
 
 			// board (inner part of body)
-			m_board.Fill = m_brushLightenedBase;
 			m_board.Height = GraphicContainer.REP_MINIMUM_HEIGHT - 30;
 			m_board.Width = width - 12;
 			m_board.RadiusX = 3;
@@ -191,6 +199,12 @@ namespace AlgGui
 		{
 			m_brushBase = new SolidColorBrush(m_baseColor);
 			m_brushLightenedBase = new SolidColorBrush(lightenColor(m_baseColor, 0.6f));
+		}
+
+		private void applyBrushes()
+		{
+			m_body.Fill = m_brushBase;
+			m_board.Fill = m_brushLightenedBase;
 		}
 
 		private Color lightenColor(Color color, float p)

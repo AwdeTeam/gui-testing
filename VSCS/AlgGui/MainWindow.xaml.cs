@@ -371,12 +371,12 @@ namespace AlgGui
 
 					if (attr == "lbl") 
 					{ 
-						//r.setLabelText(val);
+						r.setName(val);
 						log("Updated representation label to '" + val + "'");
 					}
 					else if (attr == "color") 
 					{
-                        r.m_baseColor = ((SolidColorBrush)(new BrushConverter().ConvertFrom("#" + val))).Color; 
+                        r.getGraphic().setBaseColor(((SolidColorBrush)(new BrushConverter().ConvertFrom("#" + val))).Color); 
 						log("Updated representation color to #" + val);
 					}
 				}

@@ -106,6 +106,12 @@ namespace AlgGui
 				}
 			}
 			else if (m_isDraggingRepresentation) { m_draggingRepresentation.evt_MouseUp(sender, e); }
+			else if (m_isDraggingConnection)
+			{
+				if (m_draggingConnection != null && !m_draggingConnection.getParent().isComplete()) { m_draggingConnection.removeGraphic(); }
+				m_draggingConnection = null;
+				m_isDraggingConnection = false;
+			}
 		}
 	}
 }
