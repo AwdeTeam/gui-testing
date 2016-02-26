@@ -33,6 +33,11 @@ namespace AlgGui
 			createDrawing();
 		}
 
+		// properties
+		public double getCurrentX() { return Canvas.GetLeft(m_body); }
+		public double getCurrentY() { return Canvas.GetTop(m_body); }
+
+
 		// -- FUNCTIONS --
 		private void createDrawing()
 		{
@@ -64,7 +69,7 @@ namespace AlgGui
 
 		private void evt_MouseDown(object sender, MouseEventArgs e)
 		{
-
+			Connection con = new Connection(m_parent);
 		}
 
 		private void evt_MouseUp(object sender, MouseEventArgs e)

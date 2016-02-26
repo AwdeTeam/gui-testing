@@ -60,6 +60,8 @@ namespace AlgGui
 		public void removeConnection(Connection c) { m_connections.Remove(c); }
         public int getNumConnections() { return m_connections.Count;  }
         public Connection getConnection(int i) { return m_connections[i]; }
+
+		public Datatype getDatatype() { return m_datatype; }
 		
 		// -- FUNCTIONS --
 

@@ -54,6 +54,12 @@ namespace AlgGui
 			m_draggingRepresentation = rep;
 		}
 
+		public void setDraggingConnection(bool dragging, ConnectionGraphic cg)
+		{
+			m_isDraggingConnection = dragging;
+			m_draggingConnection = cg;
+		}
+
 		// EVENT HANDLERS
 		public void evt_MouseMove(object sender, MouseEventArgs e)
 		{
@@ -68,6 +74,7 @@ namespace AlgGui
 				}
 			}
 			else if (m_isDraggingRepresentation) { m_draggingRepresentation.evt_MouseMove(sender, e); }
+			else if (m_isDraggingConnection) { }
 		}
 
 		public void evt_MouseDown(object sender, MouseButtonEventArgs e)

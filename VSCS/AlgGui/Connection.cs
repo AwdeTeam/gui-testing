@@ -13,7 +13,7 @@ namespace AlgGui
 	public class Connection
 	{
 		// member variables
-		private Line m_body = new Line();
+		//private Line m_body = new Line();
 		private Node m_inNode, m_outNode; // same as below, but referenced for different reasons
 
 		private Node m_origin;
@@ -22,7 +22,8 @@ namespace AlgGui
 
 		private bool m_completed = false; // if connection has been created/assigned to two nodes
 
-        private Label m_typename = new Label();
+        //private Label m_typename = new Label();
+		private ConnectionGraphic m_graphic;
 
 		// construction
 		public Connection(Node start)
@@ -39,7 +40,9 @@ namespace AlgGui
                 }
             }
 			else { m_outNode = start; }
+			m_graphic = GraphicFactory.createConnectionGraphic(this);
 			//createDrawing();
+
 		}
 
 		// properties
@@ -47,7 +50,7 @@ namespace AlgGui
 		public Node getEnd() { return m_end; }
 
 		public bool isComplete() { return m_completed; }
-		public Line getBody() { return m_body; }
+		//public Line getBody() { return m_body; }
 
 		public Node getInputNode() { return m_inNode; }
 		public Node getOutputNode() { return m_outNode; }
@@ -82,9 +85,9 @@ namespace AlgGui
 			// set end point to end node center
 			//adjustSecondPoint((int)(m_end.getCurrentX() + m_end.getBody().Width / 2), (int)(m_end.getCurrentY() + m_end.getBody().Height / 2));
 			m_completed = true;
-            Master.getCanvas().Children.Remove(m_typename);
+            //Master.getCanvas().Children.Remove(m_typename);
 
-			int inputRepID = m_inNode.getParent().getID();
+			/*int inputRepID = m_inNode.getParent().getID();
 			int inputNodeID = m_inNode.getGroupNum();
 			int outputRepID = m_outNode.getParent().getID();
 			int outputNodeID = m_outNode.getGroupNum();
@@ -118,7 +121,7 @@ namespace AlgGui
                 Canvas.SetLeft(m_typename, m_body.X2);
                 Canvas.SetTop(m_typename, m_body.Y2);
             }
-		}
+		}*/
 
 		// initialize graphics
 		/*private void createDrawing()

@@ -26,5 +26,10 @@ namespace AlgGui
 		{
 			return new NodeGraphic(parent);
 		}
+
+		public static ConnectionGraphic createConnectionGraphic(Connection parent)
+		{
+			return new ConnectionGraphic(parent);
+		}
 	}
 }
