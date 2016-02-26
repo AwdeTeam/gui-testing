@@ -34,7 +34,7 @@ namespace AlgGui
 		private Label m_lblContent = new Label();
 		private Color m_baseColor = Colors.SeaGreen;
 		private SolidColorBrush m_brushBorder = new SolidColorBrush(Colors.Black); // prob better way to do this?
-		private SolidColorBrush m_brushBorderSelected = new SolidColorBrush(Colors.OrangeRed);
+		private SolidColorBrush m_brushBorderSelected = new SolidColorBrush(Colors.Orange);
 		private SolidColorBrush m_brushForeground = new SolidColorBrush(Colors.Black);
 		private SolidColorBrush m_brushBase;
 		private SolidColorBrush m_brushLightenedBase;

@@ -59,5 +59,17 @@ namespace AlgGui
 			Canvas.SetTop(m_body, y + m_offsetY);
 			// CONNECTION STUFF?
 		}
+
+		// -- EVENT HANDLERS --
+
+		private void evt_MouseDown(object sender, MouseEventArgs e)
+		{
+
+		}
+
+		private void evt_MouseUp(object sender, MouseEventArgs e)
+		{
+
+		}
 	}
 }

@@ -26,8 +26,8 @@ namespace AlgGui
 		private bool m_isTyping = false; // meant to counteract window auto focusing textbox even if already typing there
 		private bool m_isTypingNotAvail = false; // set to true if need to type elsewhere so doesn't auto put cursor in console when start to type
 
-		private bool m_isDragging = false; // updated by individual components so don't stop dragging when mouse leaves
-		private Representation m_draggingRep = null;
+		//private bool m_isDragging = false; // updated by individual components so don't stop dragging when mouse leaves
+		//private Representation m_draggingRep = null;
 
 		private bool m_isDraggingScreen = false; // panning entire screen
 
@@ -76,11 +76,11 @@ namespace AlgGui
 		// properties
 		public Canvas getMainCanvas() { return world; }
 		public GraphicContainer getGraphicContainer() { return m_gc; }
-		public void setDragging(bool dragging, Representation dragRep) 
+		/*public void setDragging(bool dragging, Representation dragRep) 
 		{ 
 			m_isDragging = dragging; m_draggingRep = dragRep;
 			//log("dragging is " + dragging, Colors.Fuchsia); // DEBUG
-		}
+		}*/
 		public void setDraggingConnection(bool dragging, Connection con)
 		{
 			m_isDraggingConnection = true;
