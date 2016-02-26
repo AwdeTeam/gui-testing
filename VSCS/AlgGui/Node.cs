@@ -56,6 +56,7 @@ namespace AlgGui
 		public bool isInput() { return m_isInput; }
 		public int getGroupNum() { return m_groupNum; }
 
+		public List<Connection> getConnections() { return m_connections; }
 		public void addConnection(Connection c) { m_connections.Add(c); }
 		public void removeConnection(Connection c) { m_connections.Remove(c); }
         public int getNumConnections() { return m_connections.Count;  }
@@ -110,7 +111,7 @@ namespace AlgGui
 		private void body_mouseUp(object sender, MouseEventArgs e)
 		{
 			// try to finalize/complete connection
-			Master.log("Registered up"); // DEBUG
+		/*	Master.log("Registered up"); // DEBUG
 			if (Master.getDraggingConnection() != null)
 			{
 				Master.log("Released on node", Colors.Orchid); // DEBUG
@@ -122,7 +123,18 @@ namespace AlgGui
 				con.getOrigin().addConnection(con);
 
 				Master.setDraggingConnection(false, null);
-			}
+			}*/
+		}
+
+		// finishes out the connection
+		public void connect(Connection con)
+		{
+			if (!con.completeConnection(this)) { return; } // need actual deletion code for connection stuff?
+			//maybe this function should return true if connection successful, false if not?
+
+			// add connection to both nodes' collection
+			m_connections.Add(con);
+			con.getOrigin().addConnection(con);
 		}
 	}
 }

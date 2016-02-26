@@ -9,7 +9,6 @@ using System.Windows.Shapes;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Data;
-using System.Windows.Media;
 using System.Windows.Navigation;
 
 namespace AlgGui
@@ -32,6 +31,14 @@ namespace AlgGui
 		{
 			m_parent = parent;
 			createDrawing();
+		}
+
+		// properties
+		public Connection getParent() { return m_parent; }
+		public void setStrokeColor(Color color)
+		{
+			m_brushStroke = new SolidColorBrush(color);
+			m_body.Stroke = m_brushStroke;
 		}
 
 		// -- FUNCTIONS -- 
@@ -59,11 +66,21 @@ namespace AlgGui
 			m_isDragging = true;
 		}
 
+		// visually attaches connection to passed node
+		public void finishVisualConnection(Node n)
+		{
+			adjustSecondPoint((int)(n.getGraphic().getCurrentX() + GraphicContainer.NODE_SIZE / 2), (int)(n.getGraphic().getCurrentY() + GraphicContainer.NODE_SIZE / 2));
+			m_body.IsHitTestVisible = true; // make clickable
+			Master.getCanvas().Children.Remove(m_lblTypeName);
+		}
+
 		// moves the end of the line attached to passed node
 		public void adjustRelatedPoint(Node node)
 		{
-			//if (node.Equals(m_origin)) { adjustFirstPoint((int)(m_origin.getCurrentX() + m_origin.getBody().Width / 2), (int)(m_origin.getCurrentY() + m_origin.getBody().Height / 2)); }
-			//else if (node.Equals(m_end)) { adjustSecondPoint((int)(m_end.getCurrentX() + m_end.getBody().Width / 2), (int)(m_end.getCurrentY() + m_end.getBody().Height / 2)); }
+			Node origin = m_parent.getOrigin();
+			Node end = m_parent.getEnd();
+			if (node.Equals(origin)) { adjustFirstPoint((int)(origin.getGraphic().getCurrentX() + GraphicContainer.NODE_SIZE / 2), (int)(origin.getGraphic().getCurrentY() + GraphicContainer.NODE_SIZE / 2)); }
+			else if (node.Equals(end)) { adjustSecondPoint((int)(end.getGraphic().getCurrentX() + GraphicContainer.NODE_SIZE / 2), (int)(end.getGraphic().getCurrentY() + GraphicContainer.NODE_SIZE / 2)); }
 		}
 
 		// adjusts "origin" connected point
@@ -72,8 +89,6 @@ namespace AlgGui
 			m_body.X1 = x;
 			m_body.Y1 = y;
 		}
-
-
 
 		// adjusts "end" connected point
 		public void adjustSecondPoint(int x, int y)
@@ -85,6 +100,12 @@ namespace AlgGui
 				Canvas.SetLeft(m_lblTypeName, m_body.X2);
 				Canvas.SetTop(m_lblTypeName, m_body.Y2);
 			}
+		}
+
+		public void removeGraphic()
+		{
+			Master.getCanvas().Children.Remove(m_body);
+			Master.getCanvas().Children.Remove(m_lblTypeName);
 		}
 
 

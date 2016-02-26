@@ -55,7 +55,9 @@ namespace AlgGui
 			// add to canvas
 			Master.getCanvas().Children.Add(m_body);
 
-			// event handlers?
+			// event handlers
+			m_body.MouseDown += new MouseButtonEventHandler(evt_MouseDown);
+			m_body.MouseUp += new MouseButtonEventHandler(evt_MouseUp);
 		}
 
 		public void move(double x, double y)
@@ -63,6 +65,7 @@ namespace AlgGui
 			Canvas.SetLeft(m_body, x + m_offsetX);
 			Canvas.SetTop(m_body, y + m_offsetY);
 			// CONNECTION STUFF?
+			foreach (Connection c in m_parent.getConnections()) { c.getGraphic().adjustRelatedPoint(m_parent); }
 		}
 
 		// -- EVENT HANDLERS --
@@ -70,11 +73,20 @@ namespace AlgGui
 		private void evt_MouseDown(object sender, MouseEventArgs e)
 		{
 			Connection con = new Connection(m_parent);
+			Master.log("Hey, creating a connection");
 		}
 
 		private void evt_MouseUp(object sender, MouseEventArgs e)
 		{
+			if (Master.getDraggingConnection() != null)
+			{
+				Master.log("Released on node");
+				//ConnectionGraphic cg = Master.getDraggingConnection();
+				//if (!cg.getParent().completeConnection(this.m_parent)) { return; }
 
+				m_parent.connect(Master.getDraggingConnection().getParent());
+				Master.setDraggingConnection(false, null);
+			}
 		}
 	}
 }
