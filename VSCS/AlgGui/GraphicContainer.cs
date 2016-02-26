@@ -37,8 +37,8 @@ namespace AlgGui
 		private bool m_isDraggingConnection = false;
 		private bool m_isDraggingRepresentation = false;
 
-		private Representation m_draggingRepresentation;
-		private Connection m_draggingConnection;
+		private RepresentationGraphic m_draggingRepresentation;
+		private ConnectionGraphic m_draggingConnection;
 
 		private Dictionary<int, RepresentationGraphic> m_repGraphics = new Dictionary<int, RepresentationGraphic>();
 
@@ -48,10 +48,15 @@ namespace AlgGui
 		public RepresentationGraphic getRepresentationGraphic(int id) { return m_repGraphics[id]; }
 		public void addRepresentationGraphic(RepresentationGraphic rg) { m_repGraphics.Add(rg.getParent().getID(), rg); }
 
+		public void setDraggingRepresentation(bool dragging, RepresentationGraphic rep)
+		{
+			m_isDraggingRepresentation = dragging;
+			m_draggingRepresentation = rep;
+		}
+
 		// EVENT HANDLERS
 		public void evt_MouseMove(object sender, MouseEventArgs e)
 		{
-			//Master.log("MOUSE MOVED!");
 			if (m_isDraggingScreen)
 			{
 				foreach (RepresentationGraphic rg in m_repGraphics.Values)
@@ -62,10 +67,13 @@ namespace AlgGui
 					rg.move(x, y);
 				}
 			}
+			else if (m_isDraggingRepresentation) { m_draggingRepresentation.evt_MouseMove(sender, e); }
 		}
 
 		public void evt_MouseDown(object sender, MouseButtonEventArgs e)
 		{
+			// NOTE: individual left-click mousedown is handled completely in most of the individual graphic classes
+			// (in other words, NOT routed through this class)
 			if (e.MiddleButton == MouseButtonState.Pressed)
 			{
 				m_isDraggingScreen = true;
@@ -89,6 +97,7 @@ namespace AlgGui
 					rg.setRelativeY(0);
 				}
 			}
+			else if (m_isDraggingRepresentation) { m_draggingRepresentation.evt_MouseUp(sender, e); }
 		}
 	}
 }

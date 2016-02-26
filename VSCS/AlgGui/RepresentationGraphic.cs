@@ -34,6 +34,7 @@ namespace AlgGui
 		private Label m_lblContent = new Label();
 		private Color m_baseColor = Colors.SeaGreen;
 		private SolidColorBrush m_brushBorder = new SolidColorBrush(Colors.Black); // prob better way to do this?
+		private SolidColorBrush m_brushBorderSelected = new SolidColorBrush(Colors.OrangeRed);
 		private SolidColorBrush m_brushForeground = new SolidColorBrush(Colors.Black);
 		private SolidColorBrush m_brushBase;
 		private SolidColorBrush m_brushLightenedBase;
@@ -109,6 +110,7 @@ namespace AlgGui
 			m_board.Width = width - 12;
 			m_board.RadiusX = 3;
 			m_board.RadiusY = 3;
+			m_board.IsHitTestVisible = false;
 			Canvas.SetZIndex(m_board, GraphicContainer.REP_Z_LEVEL);
 
 			// labels
@@ -203,17 +205,43 @@ namespace AlgGui
 
 		public void evt_MouseDown(object sender, MouseButtonEventArgs e)
 		{
+			if (e.LeftButton == MouseButtonState.Pressed)
+			{
+				Master.log("Representation ID " + m_id + " clicked", Colors.Salmon);
+				m_isDragging = true;
+				m_body.Stroke = m_brushBorderSelected;
 
+				// get relative coordinates
+				Point p = e.GetPosition(Master.getCanvas());
+				m_relativeX = p.X - Canvas.GetLeft(m_body);
+				m_relativeY = p.Y - Canvas.GetTop(m_body);
+
+				Master.setDraggingRepresentation(true, this);
+			}
 		}
 
 		public void evt_MouseMove(object sender, MouseEventArgs e)
 		{
-
+			if (m_isDragging)
+			{
+				Point p = e.GetPosition(Master.getCanvas());
+				double x = p.X - m_relativeX;
+				double y = p.Y - m_relativeY;
+				move(x, y);
+			}
 		}
 
 		public void evt_MouseUp(object sender, MouseEventArgs e)
 		{
+			if (m_isDragging && e.LeftButton == MouseButtonState.Released)
+			{
+				m_isDragging = false;
+				Master.setDraggingRepresentation(false, null);
 
+				m_body.Stroke = m_brushBorder;
+				m_relativeX = 0;
+				m_relativeY = 0;
+			}
 		}
 
 		public void name_MouseDown(object sender, MouseButtonEventArgs e)
