@@ -194,27 +194,12 @@ namespace AlgGui
 
 		public void setCommandPrompt(string prompt) { txtConsoleCommand.Text = prompt; txtConsoleCommand.CaretIndex = txtConsoleCommand.Text.Length; }
 
-		// add random rectangle, cause why not.
-		// NOTE: unneeded function at this point
-		private void addRect(int x, int y, int w, int h)
-		{
-			Rectangle square = new Rectangle();
-			square.Fill = new SolidColorBrush(Colors.Green);
-			square.Height = h;
-			square.Width = w;
-			world.Children.Add(square);
-			Canvas.SetLeft(square, x);
-			Canvas.SetTop(square, y);
-
-			log("Added rectangle at x = " + x + ", y = " + y + ", of width " + w + ", and height " + h);
-		}
-
 		// create representation (eventually this should be based SOLELY on an imported algorithm, not created manually)
-		private void addRep(int inputs, int outputs)
+		/*private void addRep(int inputs, int outputs)
 		{
 			Representation r = new Representation(inputs, outputs);
 			m_representations.Add(r.getID(), r);
-		}
+		}*/
 
         private void addRep(Datatype[] inputs, Datatype[] outputs)
         {
