@@ -82,9 +82,7 @@ namespace AlgGui
 			if (Master.getDraggingConnection() != null)
 			{
 				Master.log("Released on node");
-				//ConnectionGraphic cg = Master.getDraggingConnection();
-				//if (!cg.getParent().completeConnection(this.m_parent)) { return; }
-
+			
 				m_parent.connect(Master.getDraggingConnection().getParent());
 				Master.setDraggingConnection(false, null);
 			}

@@ -35,7 +35,8 @@ namespace AlgGui
 		// member variables
 		private bool m_isDraggingScreen = false;
 		private bool m_isDraggingConnection = false;
-		private bool m_isDraggingRepresentation = false;
+		private bool m_isDraggingRepresentation = false; 
+		
 
 		private RepresentationGraphic m_draggingRepresentation;
 		private ConnectionGraphic m_draggingConnection;
