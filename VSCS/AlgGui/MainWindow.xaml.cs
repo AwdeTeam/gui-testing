@@ -26,14 +26,6 @@ namespace AlgGui
 		private bool m_isTyping = false; // meant to counteract window auto focusing textbox even if already typing there
 		private bool m_isTypingNotAvail = false; // set to true if need to type elsewhere so doesn't auto put cursor in console when start to type
 
-		//private bool m_isDragging = false; // updated by individual components so don't stop dragging when mouse leaves
-		//private Representation m_draggingRep = null;
-
-		private bool m_isDraggingScreen = false; // panning entire screen
-
-		private bool m_isDraggingConnection = false;
-		private Connection m_draggingCon = null;
-
 		private List<string> m_commandHistory = new List<string>();
 		private int m_commandIndex = 0; // keeps track of where in command history you are
 
@@ -42,18 +34,13 @@ namespace AlgGui
 
 		private GraphicContainer m_gc = new GraphicContainer();
 
-		// log channel (not implemented yet)
-		const int NORMAL = 0;
-		const int DEBUG = 1;
-		const int VERBOSE = 2;
-
 		// construction
 		public MainWindow()
 		{
-
 			InitializeComponent();
 			cmd_clearConsole();
 			Master.assignWindow(this);
+
 			log("Program initialized!");
             Datatype.testingTypes();
             Datatype t0 = Datatype.getType(0);
@@ -76,18 +63,7 @@ namespace AlgGui
 		// properties
 		public Canvas getMainCanvas() { return world; }
 		public GraphicContainer getGraphicContainer() { return m_gc; }
-		/*public void setDragging(bool dragging, Representation dragRep) 
-		{ 
-			m_isDragging = dragging; m_draggingRep = dragRep;
-			//log("dragging is " + dragging, Colors.Fuchsia); // DEBUG
-		}*/
-		public void setDraggingConnection(bool dragging, Connection con)
-		{
-			m_isDraggingConnection = true;
-			m_draggingCon = con;
-			log("connection dragging is " + dragging, Colors.Fuchsia); // DEBUG
-		}
-		public Connection getDraggingConnection() { return m_draggingCon; }
+		
 
 		// ------------------------------------
 		//  EVENT HANDLERS
@@ -125,67 +101,9 @@ namespace AlgGui
 		}
 
 		// technically window_mousemove
-		private void world_MouseMove(object sender, MouseEventArgs e)
-		{
-			// if mouse has left the box it's dragging, manually call its event
-			/*if (m_isDragging) { m_draggingRep.body_MouseMove(sender, e); }
-			if (m_isDraggingScreen)
-			{
-				// if panning screen, move ALL things
-				foreach (Representation r in m_representations.Values)
-				{
-					Point p = e.GetPosition(world);
-					double x = p.X - r.getRelativeX();
-					double y = p.Y - r.getRelativeY();
-					r.move(x, y);
-				}
-			}
-			if (m_isDraggingConnection)
-			{
-				Point p = e.GetPosition(world);
-				int x = (int)p.X;
-				int y = (int)p.Y;
-				//log("mouse point: " + x + " " + y, Colors.PaleTurquoise); // DEBUG
-				m_draggingCon.adjustSecondPoint(x, y);
-			}*/
-			m_gc.evt_MouseMove(sender, e);
-		}
-
-		// technically window instead of world as well (canvases don't handle events properly....)
-		private void world_MouseDown(object sender, MouseButtonEventArgs e)
-		{
-			/*if (e.MiddleButton == MouseButtonState.Pressed)
-			{
-				m_isDraggingScreen = true;
-				foreach (Representation r in m_representations.Values)
-				{
-					Point p = e.GetPosition(world);
-					//r.setRelativeX(p.X - r.getCurrentX());
-					//r.setRelativeY(p.Y - r.getCurrentY());
-				}
-			}*/
-			m_gc.evt_MouseDown(sender, e);
-		}
-
-		private void world_MouseUp(object sender, MouseButtonEventArgs e)
-		{
-			/*if (m_isDraggingScreen)
-			{
-				m_isDraggingScreen = false;
-				foreach (Representation r in m_representations.Values)
-				{
-					//r.setRelativeX(0);
-					//r.setRelativeY(0);
-				}
-			}
-			if (m_isDraggingConnection)
-			{
-				if (m_draggingCon != null && !m_draggingCon.isComplete()) { world.Children.Remove(m_draggingCon.getBody()); }
-				m_draggingCon = null;
-				m_isDraggingConnection = false;
-			}*/
-			m_gc.evt_MouseUp(sender, e);
-		}
+		private void world_MouseMove(object sender, MouseEventArgs e) { m_gc.evt_MouseMove(sender, e); }
+		private void world_MouseDown(object sender, MouseButtonEventArgs e) { m_gc.evt_MouseDown(sender, e); }
+		private void world_MouseUp(object sender, MouseButtonEventArgs e) { m_gc.evt_MouseUp(sender, e); }
 
 
 		// ------------------------------------
@@ -308,34 +226,9 @@ namespace AlgGui
 			if (keys[0] == "exit" || keys[0] == "quit") { cmd_exit(); }
 			else if (keys[0] == "help") { cmd_printHelp(); }
 			else if (keys[0] == "clear" || keys[0] == "cls") { cmd_clearConsole(); }
-			else if (keys[0] == "add")
+			/*else if (keys[0] == "add")
 			{
-				if (keys[1] == "rect" || keys[1] == "rectangle")
-				{
-					int x = 0;
-					int y = 0;
-					int w = 0;
-					int h = 0;
-
-					// one of two methods to get xywh arguments
-					if (vals.Count > 1)
-					{
-						x = Int32.Parse(vals[0]);
-						y = Int32.Parse(vals[1]);
-						w = Int32.Parse(vals[2]);
-						h = Int32.Parse(vals[3]);
-					}
-					else // if all in one argument
-					{
-						List<string> args = vals[0].Split(',').ToList();
-						x = Int32.Parse(args[0]);
-						y = Int32.Parse(args[1]);
-						w = Int32.Parse(args[2]);
-						h = Int32.Parse(args[3]);	
-					}
-
-					addRect(x, y, w, h);
-				}
+				
 				else if (keys[1] == "rep" || keys[1] == "representation")
 				{
 					List<string> args = vals[0].Split(',').ToList();
@@ -343,7 +236,7 @@ namespace AlgGui
 					int outs = Int32.Parse(args[1]);
 					addRep(ins, outs);
 				}
-			}
+			}*/
 			else if (keys[0] == "edit")
 			{
 				if (keys[1] == "rep" || keys[1] == "representation")

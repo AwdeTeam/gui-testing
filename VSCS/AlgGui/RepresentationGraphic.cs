@@ -232,6 +232,10 @@ namespace AlgGui
 
 				Master.setDraggingRepresentation(true, this);
 			}
+			else if (e.RightButton == MouseButtonState.Pressed)
+			{
+				Master.setCommandPrompt("edit rep -" + m_id + " -");
+			}
 		}
 
 		public void evt_MouseMove(object sender, MouseEventArgs e)

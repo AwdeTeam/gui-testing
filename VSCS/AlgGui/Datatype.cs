@@ -10,10 +10,10 @@ namespace AlgGui
     {
         public enum Type { Null, Boolean, Integer, BoundedReal, Real, Complex, String, Image, Aggregate }
 
-        private Type type = Type.Null;
-        private String name = "";
-        private int rank = -1;
-        private Datatype[] bundle = null;
+        private Type m_type = Type.Null;
+        private string m_name = "";
+        private int m_rank = -1;
+        private Datatype[] m_bundle = null;
 
         private static Datatype[] Directory = null; //This is a VERY temporary solution; will need a more effecient structure later
 
@@ -41,13 +41,12 @@ namespace AlgGui
         public static Datatype aggregateTypes(String name, Datatype[] agg)
         {
             Datatype r = new Datatype();
-            r.type = Type.Aggregate;
-            r.name = name;
-            r.rank = 0;
+            r.m_type = Type.Aggregate;
+            r.m_name = name;
+            r.m_rank = 0;
             Console.Out.WriteLine(agg.Length);
-            for (int i = 0; i < agg.Length; i++)
-                r.rank += agg[i].rank;
-            r.bundle = agg;
+			for (int i = 0; i < agg.Length; i++) { r.m_rank += agg[i].m_rank; }
+            r.m_bundle = agg;
             if (!appendType(r))
             {
              //   throw new UnauthorizedAccessException(); //Probably not the right exception to use...
@@ -68,26 +67,26 @@ namespace AlgGui
         public static Datatype defineDatatype(String name, Type type, int rank)
         {
             Datatype r = new Datatype();
-            r.type = type;
-            r.name = name;
-            r.rank = rank;
+            r.m_type = type;
+            r.m_name = name;
+            r.m_rank = rank;
             appendType(r);
             return r;
         }
 
         public Boolean equals(Datatype compare) //Datatype names SHOULD be unique!
         {
-            return compare.name.Equals(name) && fits(compare);
+            return compare.m_name.Equals(m_name) && fits(compare);
         }
 
         public Boolean fits(Datatype compare)
         {
-            return compare.rank == rank && compare.type == type;
+            return compare.m_rank == m_rank && compare.m_type == m_type;
         }
 
-        public String getName() { return name; }
-        public Type getType() { return type; }
-        public int getRank() { return rank; }
+        public String getName() { return m_name; }
+        public Type getType() { return m_type; }
+        public int getRank() { return m_rank; }
 
         public static void testingTypes()
         {
@@ -98,21 +97,22 @@ namespace AlgGui
 
         public static Datatype findType(String name)
         {
-            foreach(Datatype d in Directory)
-                if(d.name.Equals(name))
-                    return d;
+			foreach (Datatype d in Directory)
+			{
+				if (d.m_name.Equals(name)) { return d; }
+			}
             return null;
         }
 
         public static Datatype getType(int dex) 
         {
-            try
-            {
-                return Directory[dex];
-            }catch(Exception e)
-            {
-                return null;
-            }
+            try { return Directory[dex]; }
+			catch(Exception e) { return null; }
         }
+
+		public override string ToString()
+		{
+			return this.m_name;
+		}
     }
 }
